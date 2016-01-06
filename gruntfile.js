@@ -263,6 +263,12 @@ module.exports = function (grunt) {
         },
 
         watch: {
+            configFiles: {
+                options: {
+                    reload: true
+                },
+                files: ['gruntfile.js']
+            },
             scss: {
                 files: ['src/scss/**/*.sass', 'src/scss/**/*.scss'],
                 tasks: ['sass']
