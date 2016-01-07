@@ -303,6 +303,40 @@ module.exports = function (grunt) {
                 files: ['src/html/**/*.html', '!src/html/_minified/**'],
                 tasks: ['minifyHtml']
             }
+        },
+
+        // Create directory template
+        mkdir: {
+            src: {
+                options: {
+                    create: [
+                        'src/js',
+                        'src/css',
+                        'src/html',
+                        'src/image'
+                    ]
+                }
+            },
+            dist: {
+                options: {
+                    create: [
+                        'dist/js',
+                        'dist/css',
+                        'dist/html',
+                        'dist/image'
+                    ]
+                }
+            },
+            test: {
+                options: {
+                    create: ['test']
+                }
+            },
+            docs: {
+                options: {
+                    create: ['docs/image']
+                }
+            }
         }
 
     });
@@ -314,6 +348,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-minify-html');
+    grunt.loadNpmTasks('grunt-mkdir');
     grunt.loadNpmTasks('grunt-postcss');
     grunt.loadNpmTasks('grunt-sass');
 
@@ -321,12 +356,41 @@ module.exports = function (grunt) {
     // Register Grunt tasks
     grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
 
+    grunt.registerTask('Make-Directories', ['mkdir:docs']);
+
     grunt.registerTask('Distribute', ['copy:dist']);
 
-    grunt.registerTask('Compilation-Tasks', ['Import-Missing-Assets', 'Pre-Minify-Cleanup', 'Preprocess-Sass-CSS', 'Minify-SRC']);
-    grunt.registerTask('Import-Missing-Assets', ['copy:bower_components', 'copy:bootstrap_assets', 'copy:bootstrap_stylesheets', 'copy:components']);
-    grunt.registerTask('Pre-Minify-Cleanup', ['copy:css_origin', 'clean:css_minified', 'copy:js_origin', 'clean:js_minified', 'clean:html_minified']);
-    grunt.registerTask('Preprocess-Sass-CSS', ['sass:scss', 'postcss:css_origin']);
-    grunt.registerTask('Minify-SRC', ['cssmin', 'uglify', 'minifyHtml']);
+    grunt.registerTask('Compilation-Tasks', [
+        'Import-Missing-Assets',
+        'Pre-Minify-Cleanup',
+        'Preprocess-Sass-CSS',
+        'Minify-SRC'
+    ]);
+
+    grunt.registerTask('Import-Missing-Assets', [
+        'copy:bower_components',
+        'copy:bootstrap_assets',
+        'copy:bootstrap_stylesheets',
+        'copy:components'
+    ]);
+
+    grunt.registerTask('Pre-Minify-Cleanup', [
+        'copy:css_origin',
+        'clean:css_minified',
+        'copy:js_origin',
+        'clean:js_minified',
+        'clean:html_minified'
+    ]);
+
+    grunt.registerTask('Preprocess-Sass-CSS', [
+        'sass:scss',
+        'postcss:css_origin'
+    ]);
+
+    grunt.registerTask('Minify-SRC', [
+        'cssmin',
+        'uglify',
+        'minifyHtml'
+    ]);
 
 };
