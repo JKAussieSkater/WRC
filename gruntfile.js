@@ -255,6 +255,9 @@ module.exports = function (grunt) {
 
         //Cleans directories which only contain minified files
         clean: {
+            dist: {
+                src: ['dist']
+            },
             css_minified: {
                 src: ['src/css/*', '!src/css/origin/**']
             },
@@ -362,7 +365,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('Make-Directories', ['mkdir:docs']);
 
-    grunt.registerTask('Distribute', ['copy:dist']);
+    grunt.registerTask('Distribute', ['clean:dist', 'copy:dist']);
 
     grunt.registerTask('Compilation-Tasks', [
         'Import-Missing-Assets',
