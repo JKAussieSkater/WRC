@@ -1,4 +1,4 @@
-var module, require;
+var module, console, require;
 
 module.exports = function (grunt) {
     'use strict';
@@ -289,7 +289,7 @@ module.exports = function (grunt) {
 
         //Cleans directories which only contain minified files
         clean: {
-            delete: {src: ['.DELETE']},
+            dot_delete: {src: ['.DELETE']},
             dist: {
                 src: ['dist']
             },
@@ -415,7 +415,7 @@ module.exports = function (grunt) {
         'copy:bootstrap_assets',
         'copy:bootstrap_stylesheets',
         'copy:components',
-        'clean:delete'
+        'clean:dot_delete'
     ]);
 
     grunt.registerTask('Pre-Minify-Cleanup', [
@@ -424,20 +424,20 @@ module.exports = function (grunt) {
         'copy:js_origin',
         'clean:js_minified',
         'clean:html_minified',
-        'clean:delete'
+        'clean:dot_delete'
     ]);
 
     grunt.registerTask('Preprocess-Sass-CSS', [
         'sass:scss',
         'postcss:css_origin',
-        'clean:delete'
+        'clean:dot_delete'
     ]);
 
     grunt.registerTask('Minify-SRC', [
         'cssmin',
         'uglify',
         'minifyHtml',
-        'clean:delete'
+        'clean:dot_delete'
     ]);
 
 };
