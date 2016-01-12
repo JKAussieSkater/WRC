@@ -29,9 +29,10 @@ module.exports = function (grunt) {
                     dest: 'src/',
                     rename: function (dest, src, cwd) {
                         //Renames folders
-                        var output = dest + src.replace(/^font-awesome\/css/, 'css').replace(/^font-awesome\/fonts/, 'fonts').replace(/^jquery\/dist/, 'js/origin/');
+                        var output = dest + src.replace(/^font-awesome\/css/, 'css').replace(/^font-awesome\/fonts/, 'fonts/font-awesome').replace(/^jquery\/dist/, 'js/origin');
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
+                            console.log('Not replacing existing file: ' + output);
                             return cwd.cwd + src;
                         } else {
                             return output;
@@ -50,9 +51,10 @@ module.exports = function (grunt) {
                     dest: 'src/',
                     rename: function (dest, src, cwd) {
                         //Renames folders
-                        var output = dest + src.replace(/^javascripts/, 'js/origin/');
+                        var output = dest + src.replace(/^javascripts/, 'js/origin');
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
+                            console.log('Not replacing existing file: ' + output);
                             return cwd.cwd + src;
                         } else {
                             return output;
@@ -74,6 +76,7 @@ module.exports = function (grunt) {
                         var output = dest + src.replace(/^_|(\/)_/, '$1');
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
+                            console.log('Not replacing existing file: ' + output);
                             return cwd.cwd + src;
                         } else {
                             return output;
@@ -92,6 +95,7 @@ module.exports = function (grunt) {
                         var output = dest + src.replace(/^_|(\/)_/, '$1');
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
+                            console.log('Not replacing existing file: ' + output);
                             return cwd.cwd + src;
                         } else {
                             return output;
@@ -114,6 +118,7 @@ module.exports = function (grunt) {
                         //Copies but doesn't replace existing files
                         var output = dest + src;
                         if (grunt.file.exists(output)) {
+                            console.log('Not replacing existing file: ' + output);
                             return cwd.cwd + src;
                         } else {
                             return output;
@@ -136,6 +141,7 @@ module.exports = function (grunt) {
                         //Copies but doesn't replace existing files
                         var output = dest + src;
                         if (grunt.file.exists(output)) {
+                            console.log('Not replacing existing file: ' + output);
                             return cwd.cwd + src;
                         } else {
                             return output;
