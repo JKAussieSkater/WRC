@@ -17,19 +17,46 @@ module.exports = function (grunt) {
 
         // Configure the copy task to move files from the development to production folders
         copy: {
+            process__bower_components: {
+                options: {
+                    process: function (content, path) {
+                        if (~path.indexOf('font-awesome/css/')) {
+                            return content.replace(/\.\.\/fonts/g, '../fonts/font-awesome');
+                        } else {
+                            return;
+                        }
+                    }
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'bower_components/',
+                    src: ['font-awesome/css/font-awesome.css'],
+                    dest: 'src/',
+                    rename: function (dest, src, cwd) {
+                        //Renames folders
+                        var output = dest + src.replace(/^font-awesome\/css/, 'css/origin');
+                        //Copies but doesn't replace existing files
+                        if (grunt.file.exists(output)) {
+                            console.log('Not replacing existing file: ' + output);
+                            return cwd.cwd + src;
+                        } else {
+                            return output;
+                        }
+                    }
+                }]
+            },
             bower_components: {
                 files: [{
                     expand: true,
                     cwd: 'bower_components/',
                     src: [
-                        'font-awesome/css/font-awesome.css',
                         'font-awesome/fonts/**',
                         'jquery/dist/jquery.js'
                     ],
                     dest: 'src/',
                     rename: function (dest, src, cwd) {
                         //Renames folders
-                        var output = dest + src.replace(/^font-awesome\/css/, 'css').replace(/^font-awesome\/fonts/, 'fonts/font-awesome').replace(/^jquery\/dist/, 'js/origin');
+                        var output = dest + src.replace(/^font-awesome\/fonts/, 'fonts/font-awesome').replace(/^jquery\/dist/, 'js/origin');
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
@@ -382,6 +409,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('Import-Missing-Assets', [
+        'copy:process__bower_components',
         'copy:bower_components',
         'copy:bootstrap_assets',
         'copy:bootstrap_stylesheets',
