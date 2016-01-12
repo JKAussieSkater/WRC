@@ -22,13 +22,14 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'bower_components/',
                     src: [
-                        'font-awesome/fonts/fontawesome-webfont.woff',
+                        'font-awesome/css/font-awesome.css',
+                        'font-awesome/fonts/**',
                         'jquery/dist/jquery.js'
                     ],
                     dest: 'src/',
                     rename: function (dest, src, cwd) {
                         //Renames folders
-                        var output = dest + src.replace(/^font-awesome\/fonts/, 'font').replace(/^jquery\/dist/, 'js/origin/');
+                        var output = dest + src.replace(/^font-awesome\/css/, 'css').replace(/^font-awesome\/fonts/, 'fonts').replace(/^jquery\/dist/, 'js/origin/');
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             return cwd.cwd + src;
@@ -43,13 +44,13 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'bower_components/bootstrap-sass/assets/',
                     src: [
-                        'fonts/bootstrap/glyphicons-halflings-regular.woff',
+                        'fonts/bootstrap/**',
                         'javascripts/bootstrap.js'
                     ],
                     dest: 'src/',
                     rename: function (dest, src, cwd) {
                         //Renames folders
-                        var output = dest + src.replace(/^fonts\/bootstrap/, 'font').replace(/^javascripts/, 'js/origin/');
+                        var output = dest + src.replace(/^javascripts/, 'js/origin/');
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             return cwd.cwd + src;
@@ -148,7 +149,7 @@ module.exports = function (grunt) {
                     cwd: 'src/',
                     src: [
                         'css/*',
-                        'font/*',
+                        'fonts/*',
                         'js/*',
                         'html/_minified/**',
                         '../LICENSE',
