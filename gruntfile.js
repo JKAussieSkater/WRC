@@ -38,7 +38,7 @@ module.exports = function (grunt) {
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
-                            return cwd.cwd + src;
+                            return '.DELETE/' + src;
                         } else {
                             return output;
                         }
@@ -60,7 +60,7 @@ module.exports = function (grunt) {
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
-                            return cwd.cwd + src;
+                            return '.DELETE/' + src;
                         } else {
                             return output;
                         }
@@ -82,7 +82,7 @@ module.exports = function (grunt) {
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
-                            return cwd.cwd + src;
+                            return '.DELETE/' + src;
                         } else {
                             return output;
                         }
@@ -104,7 +104,7 @@ module.exports = function (grunt) {
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
-                            return cwd.cwd + src;
+                            return '.DELETE/' + src;
                         } else {
                             return output;
                         }
@@ -123,7 +123,7 @@ module.exports = function (grunt) {
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
-                            return cwd.cwd + src;
+                            return '.DELETE/' + src;
                         } else {
                             return output;
                         }
@@ -146,7 +146,7 @@ module.exports = function (grunt) {
                         var output = dest + src;
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
-                            return cwd.cwd + src;
+                            return '.DELETE/' + src;
                         } else {
                             return output;
                         }
@@ -169,7 +169,7 @@ module.exports = function (grunt) {
                         var output = dest + src;
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
-                            return cwd.cwd + src;
+                            return '.DELETE/' + src;
                         } else {
                             return output;
                         }
@@ -289,6 +289,7 @@ module.exports = function (grunt) {
 
         //Cleans directories which only contain minified files
         clean: {
+            delete: {src: ['.DELETE']},
             dist: {
                 src: ['dist']
             },
@@ -413,7 +414,8 @@ module.exports = function (grunt) {
         'copy:bower_components',
         'copy:bootstrap_assets',
         'copy:bootstrap_stylesheets',
-        'copy:components'
+        'copy:components',
+        'clean:delete'
     ]);
 
     grunt.registerTask('Pre-Minify-Cleanup', [
@@ -421,18 +423,21 @@ module.exports = function (grunt) {
         'clean:css_minified',
         'copy:js_origin',
         'clean:js_minified',
-        'clean:html_minified'
+        'clean:html_minified',
+        'clean:delete'
     ]);
 
     grunt.registerTask('Preprocess-Sass-CSS', [
         'sass:scss',
-        'postcss:css_origin'
+        'postcss:css_origin',
+        'clean:delete'
     ]);
 
     grunt.registerTask('Minify-SRC', [
         'cssmin',
         'uglify',
-        'minifyHtml'
+        'minifyHtml',
+        'clean:delete'
     ]);
 
 };
