@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "world.css",
+	"sources": [
+		"../../../scss/hello/world.scss"
+	],
+	"sourcesContent": [],
+	"mappings": "",
+	"names": []
+}
