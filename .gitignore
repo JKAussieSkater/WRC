@@ -2,7 +2,6 @@
 /bower_components/
 /node_modules/
 /.bowerrc
-/components/bootswatch/superhero/
 /src/css/*
 !/src/css/
 !/src/css/origin
