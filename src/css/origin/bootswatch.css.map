@@ -3,9 +3,9 @@
 	"file": "bootswatch.css",
 	"sources": [
 		"../../scss/bootswatch.scss",
-		"../../scss/superhero/variables.scss",
+		"../../scss/superhero/_variables.scss",
 		"../../scss/bootstrap.scss",
-		"../../scss/superhero/bootswatch.scss",
+		"../../scss/superhero/_bootswatch.scss",
 		"../../scss/bootstrap/_variables.scss",
 		"../../scss/bootstrap/_mixins.scss",
 		"../../scss/bootstrap/_normalize.scss",
