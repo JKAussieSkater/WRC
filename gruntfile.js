@@ -1,4 +1,4 @@
-var module, console, require;
+var module, require;
 
 module.exports = function (grunt) {
     'use strict';
@@ -21,7 +21,7 @@ module.exports = function (grunt) {
                 options: {
                     process: function (content, path) {
                         if (~path.indexOf('font-awesome/css/')) {
-                            return content.replace(/\.\.\/fonts/g, '../fonts/font-awesome');
+                            return content.replace(/\.\.\/fonts\//g, '../fonts/font-awesome/');
                         } else {
                             return;
                         }
@@ -32,9 +32,10 @@ module.exports = function (grunt) {
                     cwd: 'bower_components/',
                     src: ['font-awesome/css/font-awesome.css'],
                     dest: 'src/',
+                    filter: 'isFile',
                     rename: function (dest, src, cwd) {
                         //Renames folders
-                        var output = dest + src.replace(/^font-awesome\/css/, 'css/origin');
+                        var output = dest + src.replace(/^font-awesome\/css\//, 'css/origin/');
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
@@ -54,9 +55,10 @@ module.exports = function (grunt) {
                         'jquery/dist/jquery.js'
                     ],
                     dest: 'src/',
+                    filter: 'isFile',
                     rename: function (dest, src, cwd) {
                         //Renames folders
-                        var output = dest + src.replace(/^font-awesome\/fonts/, 'fonts/font-awesome').replace(/^jquery\/dist/, 'js/origin');
+                        var output = dest + src.replace(/^font-awesome\/fonts\//, 'fonts/font-awesome/').replace(/^jquery\/dist\//, 'js/origin/');
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
@@ -72,35 +74,16 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'bower_components/bootstrap-sass/assets/',
                     src: [
+                        'stylesheets/bootstrap/**',
+                        'stylesheets/_bootstrap.scss',
                         'fonts/bootstrap/**',
                         'javascripts/bootstrap.js'
                     ],
                     dest: 'src/',
+                    filter: 'isFile',
                     rename: function (dest, src, cwd) {
                         //Renames folders
-                        var output = dest + src.replace(/^javascripts/, 'js/origin');
-                        //Copies but doesn't replace existing files
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
-                    }
-                }]
-            },
-            bootstrap_stylesheets: {
-                files: [{
-                    expand: true,
-                    cwd: 'bower_components/bootstrap-sass/assets/stylesheets/',
-                    src: [
-                        'bootstrap/**',
-                        '_bootstrap.scss'
-                    ],
-                    dest: 'src/scss/',
-                    rename: function (dest, src, cwd) {
-                        //Remove underscores from dependency files
-                        var output = dest + src.replace(/^_|(\/)_/, '$1');
+                        var output = dest + src.replace(/^stylesheets\//, 'scss/').replace(/^scss\/_/, 'scss/').replace(/^javascripts\//, 'js/origin/');
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
@@ -117,6 +100,7 @@ module.exports = function (grunt) {
                     cwd: 'components/bootswatch/',
                     src: ['superhero/**'],
                     dest: 'src/scss/',
+                    filter: 'isFile',
                     rename: function (dest, src, cwd) {
                         //Remove underscores from dependency files
                         var output = dest + src.replace(/^_|(\/)_/, '$1');
@@ -141,6 +125,7 @@ module.exports = function (grunt) {
                         '!*.min.css.map'
                     ],
                     dest: 'src/css/origin/',
+                    filter: 'isFile',
                     rename: function (dest, src, cwd) {
                         //Copies but doesn't replace existing files
                         var output = dest + src;
@@ -164,6 +149,7 @@ module.exports = function (grunt) {
                         '!*.min.js.map'
                     ],
                     dest: 'src/js/origin/',
+                    filter: 'isFile',
                     rename: function (dest, src, cwd) {
                         //Copies but doesn't replace existing files
                         var output = dest + src;
@@ -413,7 +399,6 @@ module.exports = function (grunt) {
         'copy:process__bower_components',
         'copy:bower_components',
         'copy:bootstrap_assets',
-        'copy:bootstrap_stylesheets',
         'copy:components',
         'clean:dot_delete'
     ]);
