@@ -310,37 +310,37 @@ module.exports = function (grunt) {
             },
             scss: {
                 files: ['src/scss/**/*.sass', 'src/scss/**/*.scss'],
-                tasks: ['sass']
+                tasks: ['sass:scss']
             },
             css: {
                 files: [
-                    'src/css/**',
-                    '!src/css/origin/**',
-                    '!src/css/*.min.css',
-                    '!src/css/*.min.css.map'
+                    'src/css/**/*',
+                    '!src/css/**/*.min.css',
+                    '!src/css/**/*.min.css.map',
+                    '!src/css/origin/**'
                 ],
                 tasks: ['copy:css_origin', 'clean:css_minified']
             },
             css_origin: {
-                files: ['src/css/origin/*.css'],
-                tasks: ['postcss:css_origin', 'cssmin']
+                files: ['src/css/origin/**/*.css'],
+                tasks: ['postcss:css_origin', 'cssmin:css']
             },
             js: {
                 files: [
-                    'src/js/**',
-                    '!src/js/origin/**',
-                    '!src/js/*.min.js',
-                    '!src/js/*.min.js.map'
+                    'src/js/**/*',
+                    '!src/js/**/*.min.js',
+                    '!src/js/**/*.min.js.map',
+                    '!src/js/origin/**'
                 ],
                 tasks: ['copy:js_origin', 'clean:js_minified']
             },
             js_origin: {
-                files: ['src/js/origin/*.js'],
-                tasks: ['uglify']
+                files: ['src/js/origin/**/*.js'],
+                tasks: ['uglify:js']
             },
             html: {
                 files: ['src/html/**/*.html', '!src/html/_minified/**'],
-                tasks: ['minifyHtml']
+                tasks: ['minifyHtml:html_minified']
             }
         },
 
@@ -425,15 +425,13 @@ module.exports = function (grunt) {
 
     grunt.registerTask('Preprocess-Sass-CSS', [
         'sass:scss',
-        'postcss:css_origin',
-        'clean:dot_delete'
+        'postcss:css_origin'
     ]);
 
     grunt.registerTask('Minify-SRC', [
         'cssmin',
         'uglify',
-        'minifyHtml',
-        'clean:dot_delete'
+        'minifyHtml'
     ]);
 
 };
