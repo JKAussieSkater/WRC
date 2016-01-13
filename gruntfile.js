@@ -17,48 +17,15 @@ module.exports = function (grunt) {
 
         // Configure the copy task to move files from the development to production folders
         copy: {
-            process__bower_components: {
-                options: {
-                    process: function (content, path) {
-                        if (~path.indexOf('font-awesome/css/')) {
-                            return content.replace(/\.\.\/fonts\//g, '../fonts/font-awesome/');
-                        } else {
-                            return;
-                        }
-                    }
-                },
+            components: {
                 files: [{
                     expand: true,
-                    cwd: 'bower_components/',
-                    src: ['font-awesome/css/font-awesome.css'],
-                    dest: 'src/',
+                    cwd: 'components/bootswatch/',
+                    src: ['superhero/**'],
+                    dest: 'src/scss/',
                     filter: 'isFile',
                     rename: function (dest, src, cwd) {
-                        //Renames folders
-                        var output = dest + src.replace(/^font-awesome\/css\//, 'css/origin/');
-                        //Copies but doesn't replace existing files
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
-                    }
-                }]
-            },
-            bower_components: {
-                files: [{
-                    expand: true,
-                    cwd: 'bower_components/',
-                    src: [
-                        'font-awesome/fonts/**',
-                        'jquery/dist/jquery.js'
-                    ],
-                    dest: 'src/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        //Renames folders
-                        var output = dest + src.replace(/^font-awesome\/fonts\//, 'fonts/font-awesome/').replace(/^jquery\/dist\//, 'js/origin/');
+                        var output = dest + src;
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
@@ -94,16 +61,53 @@ module.exports = function (grunt) {
                     }
                 }]
             },
-            components: {
+            bower_components: {
                 files: [{
                     expand: true,
-                    cwd: 'components/bootswatch/',
-                    src: ['superhero/**'],
+                    cwd: 'bower_components/',
+                    src: [
+                        'font-awesome/scss/_**',
+                        '!font-awesome/scss/_variables.scss',
+                        'font-awesome/fonts/**',
+                        'jquery/dist/jquery.js'
+                    ],
+                    dest: 'src/',
+                    filter: 'isFile',
+                    rename: function (dest, src, cwd) {
+                        //Renames folders
+                        var output = dest + src.replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/origin/');
+                        //Copies but doesn't replace existing files
+                        if (grunt.file.exists(output)) {
+                            console.log('Not replacing existing file: ' + output);
+                            return '.DELETE/' + src;
+                        } else {
+                            return output;
+                        }
+                    }
+                }]
+            },
+            process__fontawesome: {
+                options: {
+                    process: function (content, path) {
+                        if (~path.indexOf('font-awesome.scss')) {
+                            return content.replace(/@import "/g, '@import "font-awesome/');
+                        } else if (~path.indexOf('_variables.scss')) {
+                            return content.replace(/"\.\.\/fonts"/, '"../fonts/font-awesome"');
+                        }
+                    }
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'bower_components/font-awesome/scss/',
+                    src: [
+                        'font-awesome.scss',
+                        '_variables.scss'
+                    ],
                     dest: 'src/scss/',
                     filter: 'isFile',
                     rename: function (dest, src, cwd) {
-                        //Remove underscores from dependency files
-                        var output = dest + src.replace(/^_|(\/)_/, '$1');
+                        //Renames folders
+                        var output = dest + src.replace(/^_/, 'font-awesome/_');
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
@@ -167,10 +171,13 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'src/',
                     src: [
-                        'css/*',
-                        'fonts/*',
-                        'js/*',
+                        'css/**',
+                        '!css/origin',
+                        'fonts/**',
                         'html/_minified/**',
+                        'images/**',
+                        'js/**',
+                        '!js/origin',
                         '../LICENSE',
                         '../README.md'
                     ],
@@ -396,7 +403,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('Import-Missing-Assets', [
-        'copy:process__bower_components',
+        'copy:process__fontawesome',
         'copy:bower_components',
         'copy:bootstrap_assets',
         'copy:components',
