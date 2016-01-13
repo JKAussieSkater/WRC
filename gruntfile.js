@@ -172,12 +172,12 @@ module.exports = function (grunt) {
                     cwd: 'src/',
                     src: [
                         'css/**',
-                        '!css/origin',
+                        '!css/origin/**',
                         'fonts/**',
                         'html/_minified/**',
                         'images/**',
                         'js/**',
-                        '!js/origin',
+                        '!js/origin/**',
                         '../LICENSE',
                         '../README.md'
                     ],
