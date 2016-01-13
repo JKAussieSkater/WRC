@@ -25,8 +25,8 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'src/scss/',
                     src: [
-                        '*.sass',
-                        '*.scss'
+                        '**/*.sass',
+                        '**/*.scss'
                     ],
                     dest: 'src/css/origin/',
                     ext: '.css'
@@ -47,7 +47,7 @@ module.exports = function (grunt) {
                     files: [{
                         expand: true,
                         cwd: 'src/css/origin/',
-                        src: ['*.css'],
+                        src: ['**/*.css'],
                         dest: 'src/css/origin/'
                     }]
                 }
@@ -64,7 +64,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/css/origin/',
-                    src: ['*.css'],
+                    src: ['**/*.css'],
                     dest: 'src/css/',
                     ext: '.min.css'
                 }]
@@ -82,7 +82,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/js/origin/',
-                    src: ['*.js'],
+                    src: ['**/*.js'],
                     dest: 'src/js/',
                     ext: '.min.js'
                 }]
@@ -160,13 +160,15 @@ module.exports = function (grunt) {
                         'font-awesome/scss/_**',
                         '!font-awesome/scss/_variables.scss',
                         'font-awesome/fonts/**',
-                        'jquery/dist/jquery.js'
+                        'jquery/dist/jquery.js',
+                        'html5shiv/dist/html5shiv.js',
+                        'respond/dest/respond.src.js'
                     ],
                     dest: 'src/',
                     filter: 'isFile',
                     rename: function (dest, src, cwd) {
                         //Renames folders
-                        var output = dest + src.replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/origin/');
+                        var output = dest + src.replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/origin/').replace(/^html5shiv\/dist\//, 'js/origin/polyfill/').replace(/^respond\/dest\/respond.src.js/, 'js/origin/polyfill/respond.js');
                         //Copies but doesn't replace existing files
                         if (grunt.file.exists(output)) {
                             console.log('Not replacing existing file: ' + output);
@@ -216,8 +218,8 @@ module.exports = function (grunt) {
                     src: [
                         '**',
                         '!origin/**',
-                        '!*.min.css',
-                        '!*.min.css.map'
+                        '!**/*.min.css',
+                        '!**/*.min.css.map'
                     ],
                     dest: 'src/css/origin/',
                     filter: 'isFile',
@@ -240,8 +242,8 @@ module.exports = function (grunt) {
                     src: [
                         '**',
                         '!origin/**',
-                        '!*.min.js',
-                        '!*.min.js.map'
+                        '!**/*.min.js',
+                        '!**/*.min.js.map'
                     ],
                     dest: 'src/js/origin/',
                     filter: 'isFile',
