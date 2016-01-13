@@ -1,7 +1,9 @@
 {
-    "name": "WRC",
-    "dependencies": {
-        "bootstrap-sass": "~3.3.6",
-        "font-awesome": "fontawesome#~4.5.0"
-    }
+  "name": "WRC",
+  "dependencies": {
+    "bootstrap-sass": "~3.3.6",
+    "font-awesome": "fontawesome#~4.5.0",
+    "respond": "~1.4.2",
+    "html5shiv": "~3.7.3"
+  }
 }
