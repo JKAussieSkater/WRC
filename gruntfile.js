@@ -6,7 +6,7 @@ module.exports = function (grunt) {
     // Configuration goes here
     grunt.initConfig({
 
-        //Retrieve project's metadata
+        // Retrieve project's metadata
         pkg: grunt.file.readJSON('package.json'),
 
         mybanner:   '-------------------------------------\n' +
@@ -15,7 +15,98 @@ module.exports = function (grunt) {
                     '-------------------------------------\n' +
                     '     Version: <%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>)',
 
-        // Configure the copy task to move files from the development to production folders
+        // Compiles Sass files into CSS files
+        sass: {
+            scss: {
+                options: {
+                    sourceMap: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'src/scss/',
+                    src: [
+                        '*.sass',
+                        '*.scss'
+                    ],
+                    dest: 'src/css/origin/',
+                    ext: '.css'
+                }]
+            }
+        },
+
+        // Enhances CSS in order to be compatible with more browsers
+        postcss: {
+            css_origin: {
+                options: {
+                    map: true,
+                    processors: [
+                        require('autoprefixer')({browsers: 'last 2 versions'})
+                    ]
+                },
+                dist: {
+                    files: [{
+                        expand: true,
+                        cwd: 'src/css/origin/',
+                        src: ['*.css'],
+                        dest: 'src/css/origin/'
+                    }]
+                }
+            }
+        },
+
+        // Minify CSS
+        cssmin: {
+            css: {
+                options: {
+                    //banner: '/*\n<%= mybanner %>\n*/\n',
+                    sourceMap: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'src/css/origin/',
+                    src: ['*.css'],
+                    dest: 'src/css/',
+                    ext: '.min.css'
+                }]
+            }
+        },
+
+        // Minify JavaScript
+        uglify: {
+            js: {
+                options: {
+                    //banner: '/*\n<%= mybanner %>\n*/\n',
+                    preserveComments: false,
+                    sourceMap: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'src/js/origin/',
+                    src: ['*.js'],
+                    dest: 'src/js/',
+                    ext: '.min.js'
+                }]
+            }
+        },
+
+        // Minify HTML
+        minifyHtml: {
+            html_minified: {
+                options: {
+                    cdata: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'src/html/',
+                    src: ['**', '!_minified/**'],
+                    dest: 'src/html/_minified/',
+                    filter: 'isFile'
+                }]
+            }
+        },
+
+        // Copies files from 3rd party sources to the `src` folder
+        // Copies files from `src` folder to `dist` folder on production
         copy: {
             components: {
                 files: [{
@@ -190,97 +281,7 @@ module.exports = function (grunt) {
             }
         },
 
-        //Compiles Sass files into CSS files
-        sass: {
-            scss: {
-                options: {
-                    sourceMap: true
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'src/scss/',
-                    src: [
-                        '*.sass',
-                        '*.scss'
-                    ],
-                    dest: 'src/css/origin/',
-                    ext: '.css'
-                }]
-            }
-        },
-
-        //Enhances CSS in order to be compatible with more browsers
-        postcss: {
-            css_origin: {
-                options: {
-                    map: true,
-                    processors: [
-                        require('autoprefixer')({browsers: 'last 2 versions'})
-                    ]
-                },
-                dist: {
-                    files: [{
-                        expand: true,
-                        cwd: 'src/css/origin/',
-                        src: ['*.css'],
-                        dest: 'src/css/origin/'
-                    }]
-                }
-            }
-        },
-
-        //Minify CSS
-        cssmin: {
-            css: {
-                options: {
-                    //banner: '/*\n<%= mybanner %>\n*/\n',
-                    sourceMap: true
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'src/css/origin/',
-                    src: ['*.css'],
-                    dest: 'src/css/',
-                    ext: '.min.css'
-                }]
-            }
-        },
-
-        //Minify JavaScript
-        uglify: {
-            js: {
-                options: {
-                    //banner: '/*\n<%= mybanner %>\n*/\n',
-                    preserveComments: false,
-                    sourceMap: true
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'src/js/origin/',
-                    src: ['*.js'],
-                    dest: 'src/js/',
-                    ext: '.min.js'
-                }]
-            }
-        },
-
-        //Minify HTML
-        minifyHtml: {
-            html_minified: {
-                options: {
-                    cdata: true
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'src/html/',
-                    src: ['**', '!_minified/**'],
-                    dest: 'src/html/_minified/',
-                    filter: 'isFile'
-                }]
-            }
-        },
-
-        //Cleans directories which only contain minified files
+        // Cleans directories which only contain minified files
         clean: {
             dot_delete: {src: ['.DELETE']},
             dist: {
@@ -297,6 +298,7 @@ module.exports = function (grunt) {
             }
         },
 
+        // Watches `src` files for changes, and performs appropriate tasks on-the-fly
         watch: {
             configFiles: {
                 options: {
