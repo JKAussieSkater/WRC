@@ -220,7 +220,7 @@ module.exports = function (grunt) {
                         }
                         // RegExp to find an opening and closing custom tag
                         // The closing tag is mentioned twice; this helps the opening tag match with the first available closing tag (as opposed to the last found tag)
-                        return content.replace(/<!--concat:css-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<link href="' + strDepth + 'css/master.min.css" rel="stylesheet">').replace(/<!--concat:js-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<link href="' + strDepth + 'js/master.min.js" rel="stylesheet">').replace(/<!--concat:polyfill-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<!--[if lt IE 9]><link href="' + strDepth + 'js/polyfill/master.min.js" rel="stylesheet"><![endif]-->');
+                        return content.replace(/<!--concat:css-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<link href="' + strDepth + 'css/master.min.css" rel="stylesheet">').replace(/<!--concat:js-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<link href="' + strDepth + 'js/master.min.js" rel="stylesheet">').replace(/<!--concat:polyfill-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<!--[if lt IE 9]><link href="' + strDepth + 'js/polyfill/master.min.js" rel="stylesheet"><![endif]-->').replace(/<!--concat:css_bootswatch-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<link href="' + strDepth + 'css/master_bootswatch.min.css" rel="stylesheet">');
                     }
                 },
                 files: [{
@@ -310,6 +310,14 @@ module.exports = function (grunt) {
                 files: [{
                     'dist/css/master.min.css': [
                         'src/css/bootstrap.min.css',
+                        'src/css/font-awesome.min.css'
+                    ]
+                }]
+            },
+            css_bootswatch: {
+                files: [{
+                    'dist/css/master_bootswatch.min.css': [
+                        'src/css/bootswatch.min.css',
                         'src/css/font-awesome.min.css'
                     ]
                 }]
