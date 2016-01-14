@@ -93,12 +93,12 @@ module.exports = function (grunt) {
         minifyHtml: {
             html_minified: {
                 options: {
-                    cdata: true
+                    conditionals: true
                 },
                 files: [{
                     expand: true,
-                    cwd: 'src/html/',
-                    src: ['**', '!_minified/**'],
+                    cwd: 'src/html/_minified/',
+                    src: ['**'],
                     dest: 'src/html/_minified/',
                     filter: 'isFile'
                 }]
@@ -211,6 +211,26 @@ module.exports = function (grunt) {
                     }
                 }]
             },
+            process_html: {
+                options: {
+                    process: function (content, path) {
+                        var strDepth = '../';
+                        for (var i = path.match(/\//g).length - 2; i; i--) {
+                            strDepth = strDepth + '../';
+                        }
+                        // RegExp to find an opening and closing custom tag
+                        // The closing tag is mentioned twice; this helps the opening tag match with the first available closing tag (as opposed to the last found tag)
+                        return content.replace(/<!--concat:css-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<link href="' + strDepth + 'css/master.min.css" rel="stylesheet">').replace(/<!--concat:js-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<link href="' + strDepth + 'js/master.min.js" rel="stylesheet">').replace(/<!--concat:polyfill-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<!--[if lt IE 9]><link href="' + strDepth + 'js/polyfill/master.min.js" rel="stylesheet"><![endif]-->');
+                    }
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'src/html/',
+                    src: ['**', '!_minified/**'],
+                    dest: 'src/html/_minified/',
+                    filter: 'isFile'
+                }]
+            },
             css_origin: {
                 files: [{
                     expand: true,
@@ -283,6 +303,35 @@ module.exports = function (grunt) {
             }
         },
 
+        // Merges all CSS files, JS files, and polyfill files into single files
+        // Allows for fewer HTTP requests, and faster browser load speeds
+        concat: {
+            css: {
+                files: [{
+                    'dist/css/master.min.css': [
+                        'src/css/bootstrap.min.css',
+                        'src/css/font-awesome.min.css'
+                    ]
+                }]
+            },
+            js: {
+                files: [{
+                    'dist/js/master.min.js': [
+                        'src/js/jquery.min.js',
+                        'src/js/bootstrap.min.js'
+                    ]
+                }]
+            },
+            polyfill: {
+                files: [{
+                    'dist/js/polyfill/master.min.js': [
+                        'src/js/polyfill/html5shiv.min.js',
+                        'src/js/polyfill/respond.min.js'
+                    ]
+                }]
+            }
+        },
+
         // Cleans directories which only contain minified files
         clean: {
             dot_delete: {src: ['.DELETE']},
@@ -337,10 +386,6 @@ module.exports = function (grunt) {
             js_origin: {
                 files: ['src/js/origin/**/*.js'],
                 tasks: ['uglify:js']
-            },
-            html: {
-                files: ['src/html/**/*.html', '!src/html/_minified/**'],
-                tasks: ['minifyHtml:html_minified']
             }
         },
 
@@ -382,6 +427,7 @@ module.exports = function (grunt) {
 
     // Load Grunt plugins
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -397,7 +443,11 @@ module.exports = function (grunt) {
 
     grunt.registerTask('Make-Directories', ['mkdir:docs']);
 
-    grunt.registerTask('Distribute', ['clean:dist', 'copy:dist']);
+    grunt.registerTask('Distribute', [
+        'clean:dist',
+        'concat',
+        'copy:dist'
+    ]);
 
     grunt.registerTask('Compilation-Tasks', [
         'Import-Missing-Assets',
@@ -431,6 +481,7 @@ module.exports = function (grunt) {
     grunt.registerTask('Minify-SRC', [
         'cssmin',
         'uglify',
+        'copy:process_html',
         'minifyHtml'
     ]);
 
