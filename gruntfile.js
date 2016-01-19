@@ -65,7 +65,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'src/_compiled/css/',
                     src: ['**/*.css'],
-                    dest: 'src/_compiled/css/'
+                    dest: 'src/_compiled/css/',
                     ext: '.min.css'
                 }]
             }
@@ -83,7 +83,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'src/_compiled/js/',
                     src: ['**/*.js'],
-                    dest: 'src/_compiled/js/'
+                    dest: 'src/_compiled/js/',
                     ext: '.min.js'
                 }]
             }
@@ -99,7 +99,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'src/_compiled/html/',
                     src: ['**/*.html'],
-                    dest: 'src/_compiled/html/'
+                    dest: 'src/_compiled/html/',
                     filter: 'isFile'
                 }]
             }
@@ -109,6 +109,29 @@ module.exports = function (grunt) {
         // Copies files from `src` folder to `dist` folder on production
         copy: {
             components: {
+                options: {
+                    boolean: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'components/bootswatch/',
+                    src: ['superhero/**'],
+                    dest: 'src/scss/',
+                    filter: function (dest) {
+                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '');
+                        if (grunt.file.exists(output)) {
+                            console.log('Already exists: ' + output);
+                            return false;
+                        } else if (!grunt.file.isFile(dest)) {
+                            console.log('Not a file: ' + dest);
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                }]
+            },
+            components_original: {
                 files: [{
                     expand: true,
                     cwd: 'components/bootswatch/',
@@ -375,7 +398,9 @@ module.exports = function (grunt) {
 
 
     // Register Grunt tasks
-    grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
+    //grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
+
+    grunt.registerTask('Copy-components', ['copy:components']);
 
     grunt.registerTask('Make-Directories', ['mkdir:docs']);
 
