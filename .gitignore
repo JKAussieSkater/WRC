@@ -2,10 +2,4 @@
 /bower_components/
 /node_modules/
 /.bowerrc
-/src/css/*
-!/src/css/
-!/src/css/origin
-/src/js/*
-!/src/js/
-!/src/js/origin
-/src/html/_minified
+/src/_compiled
