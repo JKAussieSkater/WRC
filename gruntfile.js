@@ -46,9 +46,9 @@ module.exports = function (grunt) {
                 dist: {
                     files: [{
                         expand: true,
-                        cwd: 'src/css/origin/',
+                        cwd: 'src/_compiled/css/',
                         src: ['**/*.css'],
-                        dest: 'src/css/origin/'
+                        dest: 'src/_compiled/css/'
                     }]
                 }
             }
@@ -63,9 +63,9 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: 'src/css/origin/',
+                    cwd: 'src/_compiled/css/',
                     src: ['**/*.css'],
-                    dest: 'src/css/',
+                    dest: 'src/_compiled/css/'
                     ext: '.min.css'
                 }]
             }
@@ -81,9 +81,9 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: 'src/js/origin/',
+                    cwd: 'src/_compiled/js/',
                     src: ['**/*.js'],
-                    dest: 'src/js/',
+                    dest: 'src/_compiled/js/'
                     ext: '.min.js'
                 }]
             }
@@ -97,9 +97,9 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: 'src/html/_minified/',
-                    src: ['**'],
-                    dest: 'src/html/_minified/',
+                    cwd: 'src/_compiled/html/',
+                    src: ['**/*.html'],
+                    dest: 'src/_compiled/html/'
                     filter: 'isFile'
                 }]
             }
@@ -211,7 +211,7 @@ module.exports = function (grunt) {
                     }
                 }]
             },
-            process_html: {
+            process__html: {
                 options: {
                     process: function (content, path) {
                         var strDepth = '../';
@@ -231,74 +231,20 @@ module.exports = function (grunt) {
                     filter: 'isFile'
                 }]
             },
-            css_origin: {
-                files: [{
-                    expand: true,
-                    cwd: 'src/css/',
-                    src: [
-                        '**',
-                        '!origin/**',
-                        '!**/*.min.css',
-                        '!**/*.min.css.map'
-                    ],
-                    dest: 'src/css/origin/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        //Copies but doesn't replace existing files
-                        var output = dest + src;
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
-                    }
-                }]
-            },
-            js_origin: {
-                files: [{
-                    expand: true,
-                    cwd: 'src/js/',
-                    src: [
-                        '**',
-                        '!origin/**',
-                        '!**/*.min.js',
-                        '!**/*.min.js.map'
-                    ],
-                    dest: 'src/js/origin/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        //Copies but doesn't replace existing files
-                        var output = dest + src;
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
-                    }
-                }]
-            },
             dist: {
                 files: [{
                     expand: true,
-                    cwd: 'src/',
+                    cwd: 'src/_compiled/',
                     src: [
                         'css/**',
-                        '!css/origin/**',
                         'fonts/**',
-                        'html/_minified/**',
                         'images/**',
                         'js/**',
-                        '!js/origin/**',
-                        '../LICENSE',
-                        '../README.md'
+                        '../../LICENSE',
+                        '../../README.md'
                     ],
                     dest: 'dist/',
-                    filter: 'isFile',
-                    rename: function (dest, src) {
-                        return dest + src.replace(/^html\/_minified/, 'html');
-                    }
+                    filter: 'isFile'
                 }]
             }
         },
@@ -309,8 +255,8 @@ module.exports = function (grunt) {
             css: {
                 files: [{
                     'dist/css/master.min.css': [
-                        'src/css/bootstrap.min.css',
-                        'src/css/font-awesome.min.css'
+                        'src/_compiled/css/bootstrap.min.css',
+                        'src/_compiled/css/font-awesome.min.css'
                     ]
                 }]
             },
@@ -346,14 +292,14 @@ module.exports = function (grunt) {
             dist: {
                 src: ['dist']
             },
-            css_minified: {
-                src: ['src/css/*', '!src/css/origin/**']
+            css: {
+                src: ['src/_compiled/css/*']
             },
-            js_minified: {
-                src: ['src/js/*', '!src/js/origin/**']
+            js: {
+                src: ['src/_compiled/js/*']
             },
-            html_minified: {
-                src: ['src/html/_minified/**']
+            html: {
+                src: ['src/_compiled/html/*']
             }
         },
 
@@ -365,35 +311,17 @@ module.exports = function (grunt) {
                 },
                 files: ['gruntfile.js']
             },
+            css: {
+                files: ['src/css/**/*'],
+                tasks: ['cssmin']
+            },
             scss: {
                 files: ['src/scss/**/*.sass', 'src/scss/**/*.scss'],
                 tasks: ['sass:scss']
             },
-            css: {
-                files: [
-                    'src/css/**/*',
-                    '!src/css/**/*.min.css',
-                    '!src/css/**/*.min.css.map',
-                    '!src/css/origin/**'
-                ],
-                tasks: ['copy:css_origin', 'clean:css_minified']
-            },
-            css_origin: {
-                files: ['src/css/origin/**/*.css'],
-                tasks: ['postcss:css_origin', 'cssmin:css']
-            },
             js: {
-                files: [
-                    'src/js/**/*',
-                    '!src/js/**/*.min.js',
-                    '!src/js/**/*.min.js.map',
-                    '!src/js/origin/**'
-                ],
-                tasks: ['copy:js_origin', 'clean:js_minified']
-            },
-            js_origin: {
-                files: ['src/js/origin/**/*.js'],
-                tasks: ['uglify:js']
+                files: ['src/js/**/*'],
+                tasks: ['uglify']
             }
         },
 
@@ -473,11 +401,9 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('Pre-Minify-Cleanup', [
-        'copy:css_origin',
-        'clean:css_minified',
-        'copy:js_origin',
-        'clean:js_minified',
-        'clean:html_minified',
+        'clean:css',
+        'clean:js',
+        'clean:html',
         'clean:dot_delete'
     ]);
 
@@ -489,7 +415,7 @@ module.exports = function (grunt) {
     grunt.registerTask('Minify-SRC', [
         'cssmin',
         'uglify',
-        'copy:process_html',
+        'copy:process__html',
         'minifyHtml'
     ]);
 
