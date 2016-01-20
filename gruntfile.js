@@ -46,16 +46,16 @@ module.exports = function (grunt) {
                 dist: {
                     files: [{
                         expand: true,
-                        cwd: 'src/css/',
+                        cwd: 'src/',
                         src: [
-                            '**/*.css',
-                            '../_compiled/css/**/*.css',
-                            '!../_compiled/css/**/*.postcss.css'
+                            'css/**/*.css',
+                            '_compiled/css/**/*.css',
+                            '!_compiled/css/**/*.postcss.css'
                         ],
                         dest: 'src/_compiled/css/',
                         ext: '.postcss.css',
                         rename: function (dest, src) {
-                            return dest + src.replace(/^\.\.\/_compiled\/css\//, '');
+                            return dest + src.replace(/^_compiled\//, '').replace(/^css\//, '');
                         }
                     }]
                 }
