@@ -385,6 +385,7 @@ module.exports = function (grunt) {
     });
 
     // Load Grunt plugins
+    require('time-grunt')(grunt);
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
