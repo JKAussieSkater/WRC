@@ -118,23 +118,6 @@ module.exports = function (grunt) {
         // Copies files from `src` folder to `dist` folder on production
         copy: {
             components: {
-                options: {
-                    boolean: true
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'components/bootswatch/',
-                    src: ['superhero/**'],
-                    dest: 'src/scss/',
-                    filter: function (dest) {
-                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '');
-                        if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
-                        else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
-                        else { return true; }
-                    }
-                }]
-            },
-            components_original: {
                 files: [{
                     expand: true,
                     cwd: 'components/bootswatch/',
@@ -394,8 +377,6 @@ module.exports = function (grunt) {
     // Register Grunt tasks
     //grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
 
-    grunt.registerTask('Copy-components', ['copy:components']);
-
     grunt.registerTask('Make-Directories', ['mkdir:docs']);
 
     grunt.registerTask('Distribute', [
@@ -406,8 +387,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('Compilation-Tasks', [
         'Import-Missing-Assets',
-        'Pre-Minify-Cleanup',
-        'Preprocess-Sass-CSS',
+        'Process-Files',
         'Minify-SRC'
     ]);
 
@@ -418,13 +398,8 @@ module.exports = function (grunt) {
         'copy:components'
     ]);
 
-    grunt.registerTask('Pre-Minify-Cleanup', [
-        'clean:css',
-        'clean:js',
-        'clean:html'
-    ]);
-
-    grunt.registerTask('Preprocess-Sass-CSS', [
+    grunt.registerTask('Process-Files', [
+        'copy:process__html',
         'sass:scss',
         'postcss:css'
     ]);
@@ -432,7 +407,6 @@ module.exports = function (grunt) {
     grunt.registerTask('Minify-SRC', [
         'cssmin',
         'uglify',
-        'copy:process__html',
         'minifyHtml'
     ]);
 
