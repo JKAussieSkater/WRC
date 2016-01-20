@@ -28,7 +28,7 @@ module.exports = function (grunt) {
                         '**/*.sass',
                         '**/*.scss'
                     ],
-                    dest: 'src/css/origin/',
+                    dest: 'src/_compiled/css/',
                     ext: '.css'
                 }]
             }
@@ -36,7 +36,7 @@ module.exports = function (grunt) {
 
         // Enhances CSS in order to be compatible with more browsers
         postcss: {
-            css_origin: {
+            css: {
                 options: {
                     map: true,
                     processors: [
@@ -46,9 +46,17 @@ module.exports = function (grunt) {
                 dist: {
                     files: [{
                         expand: true,
-                        cwd: 'src/_compiled/css/',
-                        src: ['**/*.css'],
-                        dest: 'src/_compiled/css/'
+                        cwd: 'src/css/',
+                        src: [
+                            '**/*.css',
+                            '../_compiled/css/**/*.css',
+                            '!../_compiled/css/**/*.postcss.css'
+                        ],
+                        dest: 'src/_compiled/css/',
+                        ext: '.postcss.css',
+                        rename: function (dest, src) {
+                            return dest + src.replace(/^\.\.\/_compiled\/css\//, '');
+                        }
                     }]
                 }
             }
@@ -64,7 +72,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/_compiled/css/',
-                    src: ['**/*.css'],
+                    src: ['**/*.postcss.css'],
                     dest: 'src/_compiled/css/',
                     ext: '.min.css'
                 }]
@@ -81,7 +89,7 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: 'src/_compiled/js/',
+                    cwd: 'src/js/',
                     src: ['**/*.js'],
                     dest: 'src/_compiled/js/',
                     ext: '.min.js'
@@ -98,8 +106,9 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/_compiled/html/',
-                    src: ['**/*.html'],
+                    src: ['**/*.processed.html'],
                     dest: 'src/_compiled/html/',
+                    ext: '.html',
                     filter: 'isFile'
                 }]
             }
@@ -119,15 +128,9 @@ module.exports = function (grunt) {
                     dest: 'src/scss/',
                     filter: function (dest) {
                         var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '');
-                        if (!grunt.file.isFile(dest)) {
-                            console.log('Not a file: ' + dest);
-                            return false;
-                        } else if (grunt.file.exists(output)) {
-                            console.log('Already exists: ' + output);
-                            return false;
-                        } else {
-                            return true;
-                        }
+                        if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
+                        else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
+                        else { return true; }
                     }
                 }]
             },
@@ -137,16 +140,11 @@ module.exports = function (grunt) {
                     cwd: 'components/bootswatch/',
                     src: ['superhero/**'],
                     dest: 'src/scss/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        var output = dest + src;
-                        //Copies but doesn't replace existing files
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
+                    filter: function (dest) {
+                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '');
+                        if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
+                        else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
+                        else { return true; }
                     }
                 }]
             },
@@ -161,17 +159,14 @@ module.exports = function (grunt) {
                         'javascripts/bootstrap.js'
                     ],
                     dest: 'src/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        //Renames folders
-                        var output = dest + src.replace(/^stylesheets\//, 'scss/').replace(/^scss\/_/, 'scss/').replace(/^javascripts\//, 'js/origin/');
-                        //Copies but doesn't replace existing files
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
+                    filter: function (dest) {
+                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^stylesheets\//, 'scss/').replace(/^scss\/_/, 'scss/').replace(/^javascripts\//, 'js/');
+                        if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
+                        else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
+                        else { return true; }
+                    },
+                    rename: function (dest, src) {
+                        return dest + src.replace(/^stylesheets\//, 'scss/').replace(/^scss\/_/, 'scss/').replace(/^javascripts\//, 'js/');
                     }
                 }]
             },
@@ -188,17 +183,14 @@ module.exports = function (grunt) {
                         'respond/dest/respond.src.js'
                     ],
                     dest: 'src/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        //Renames folders
-                        var output = dest + src.replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/origin/').replace(/^html5shiv\/dist\//, 'js/origin/polyfill/').replace(/^respond\/dest\/respond.src.js/, 'js/origin/polyfill/respond.js');
-                        //Copies but doesn't replace existing files
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
+                    filter: function (dest) {
+                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond.src.js/, 'js/polyfill/respond.js');
+                        if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
+                        else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
+                        else { return true; }
+                    },
+                    rename: function (dest, src) {
+                        return dest + src.replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond.src.js/, 'js/polyfill/respond.js');
                     }
                 }]
             },
@@ -220,17 +212,14 @@ module.exports = function (grunt) {
                         '_variables.scss'
                     ],
                     dest: 'src/scss/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        //Renames folders
-                        var output = dest + src.replace(/^_/, 'font-awesome/_');
-                        //Copies but doesn't replace existing files
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
+                    filter: function (dest) {
+                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^_/, 'font-awesome/_');
+                        if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
+                        else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
+                        else { return true; }
+                    },
+                    rename: function (dest, src) {
+                        return dest + src.replace(/^_/, 'font-awesome/_');
                     }
                 }]
             },
@@ -249,8 +238,9 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/html/',
-                    src: ['**', '!_minified/**'],
-                    dest: 'src/html/_minified/',
+                    src: ['**'],
+                    dest: 'src/_compiled/html/',
+                    ext: '.processed.html',
                     filter: 'isFile'
                 }]
             },
@@ -259,15 +249,19 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'src/_compiled/',
                     src: [
-                        'css/**',
-                        'fonts/**',
-                        'images/**',
-                        'js/**',
+                        'css/**/*.min.css',
+                        '../fonts/**',
+                        'html/**/*.html', '!html/**/*.processed.html',
+                        '../images/**',
+                        'js/**/*.min.js',
                         '../../LICENSE',
                         '../../README.md'
                     ],
                     dest: 'dist/',
-                    filter: 'isFile'
+                    filter: 'isFile',
+                    rename: function (dest, src) {
+                        return dest + src.replace(/^(\.\.\/)+/, '');
+                    }
                 }]
             }
         },
@@ -277,7 +271,7 @@ module.exports = function (grunt) {
         concat: {
             css: {
                 files: [{
-                    'dist/css/master.min.css': [
+                    'src/_compiled/css/master.min.css': [
                         'src/_compiled/css/bootstrap.min.css',
                         'src/_compiled/css/font-awesome.min.css'
                     ]
@@ -285,25 +279,25 @@ module.exports = function (grunt) {
             },
             css_bootswatch: {
                 files: [{
-                    'dist/css/master_bootswatch.min.css': [
-                        'src/css/bootswatch.min.css',
-                        'src/css/font-awesome.min.css'
+                    'src/_compiled/css/master_bootswatch.min.css': [
+                        'src/_compiled/css/bootswatch.min.css',
+                        'src/_compiled/css/font-awesome.min.css'
                     ]
                 }]
             },
             js: {
                 files: [{
-                    'dist/js/master.min.js': [
-                        'src/js/jquery.min.js',
-                        'src/js/bootstrap.min.js'
+                    'src/_compiled/js/master.min.js': [
+                        'src/_compiled/js/jquery.min.js',
+                        'src/_compiled/js/bootstrap.min.js'
                     ]
                 }]
             },
             polyfill: {
                 files: [{
-                    'dist/js/polyfill/master.min.js': [
-                        'src/js/polyfill/html5shiv.min.js',
-                        'src/js/polyfill/respond.min.js'
+                    'src/_compiled/js/polyfill/master.min.js': [
+                        'src/_compiled/js/polyfill/html5shiv.min.js',
+                        'src/_compiled/js/polyfill/respond.min.js'
                     ]
                 }]
             }
@@ -311,7 +305,6 @@ module.exports = function (grunt) {
 
         // Cleans directories which only contain minified files
         clean: {
-            dot_delete: {src: ['.DELETE']},
             dist: {
                 src: ['dist']
             },
@@ -422,20 +415,18 @@ module.exports = function (grunt) {
         'copy:process__fontawesome',
         'copy:bower_components',
         'copy:bootstrap_assets',
-        'copy:components',
-        'clean:dot_delete'
+        'copy:components'
     ]);
 
     grunt.registerTask('Pre-Minify-Cleanup', [
         'clean:css',
         'clean:js',
-        'clean:html',
-        'clean:dot_delete'
+        'clean:html'
     ]);
 
     grunt.registerTask('Preprocess-Sass-CSS', [
         'sass:scss',
-        'postcss:css_origin'
+        'postcss:css'
     ]);
 
     grunt.registerTask('Minify-SRC', [
