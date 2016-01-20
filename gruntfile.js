@@ -119,11 +119,11 @@ module.exports = function (grunt) {
                     dest: 'src/scss/',
                     filter: function (dest) {
                         var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '');
-                        if (grunt.file.exists(output)) {
-                            console.log('Already exists: ' + output);
-                            return false;
-                        } else if (!grunt.file.isFile(dest)) {
+                        if (!grunt.file.isFile(dest)) {
                             console.log('Not a file: ' + dest);
+                            return false;
+                        } else if (grunt.file.exists(output)) {
+                            console.log('Already exists: ' + output);
                             return false;
                         } else {
                             return true;
