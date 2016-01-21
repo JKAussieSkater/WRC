@@ -28,7 +28,7 @@ module.exports = function (grunt) {
                         '**/*.sass',
                         '**/*.scss'
                     ],
-                    dest: 'src/_compiled/css/',
+                    dest: 'src/_processed/css/',
                     ext: '.css'
                 }]
             }
@@ -48,13 +48,13 @@ module.exports = function (grunt) {
                     cwd: 'src/',
                     src: [
                         'css/**/*.css',
-                        '_compiled/css/**/*.css',
-                        '!_compiled/css/**/*.postcss.css'
+                        '_processed/css/**/*.css',
+                        '!_processed/css/**/*.postcss.css'
                     ],
-                    dest: 'src/_compiled/css/',
+                    dest: 'src/_processed/css/',
                     ext: '.postcss.css',
                     rename: function (dest, src) {
-                        return dest + src.replace(/^_compiled\//, '').replace(/^css\//, '');
+                        return dest + src.replace(/^_processed\//, '').replace(/^css\//, '');
                     }
                 }]
             }
@@ -69,9 +69,9 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: 'src/_compiled/css/',
+                    cwd: 'src/_processed/css/',
                     src: ['**/*.postcss.css'],
-                    dest: 'src/_compiled/css/',
+                    dest: 'src/_processed/css/',
                     ext: '.min.css'
                 }]
             }
@@ -89,7 +89,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'src/js/',
                     src: ['**/*.js'],
-                    dest: 'src/_compiled/js/',
+                    dest: 'src/_processed/js/',
                     ext: '.min.js'
                 }]
             }
@@ -103,9 +103,9 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: 'src/_compiled/html/',
+                    cwd: 'src/_processed/html/',
                     src: ['**/*.processed.html'],
-                    dest: 'src/_compiled/html/',
+                    dest: 'src/_processed/html/',
                     ext: '.html',
                     filter: 'isFile'
                 }]
@@ -221,7 +221,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'src/html/',
                     src: ['**'],
-                    dest: 'src/_compiled/html/',
+                    dest: 'src/_processed/html/',
                     ext: '.processed.html',
                     filter: 'isFile'
                 }]
@@ -229,7 +229,7 @@ module.exports = function (grunt) {
             dist: {
                 files: [{
                     expand: true,
-                    cwd: 'src/_compiled/',
+                    cwd: 'src/_processed/',
                     src: [
                         'css/**/*.min.css',
                         '../fonts/**',
@@ -253,33 +253,33 @@ module.exports = function (grunt) {
         concat: {
             css: {
                 files: [{
-                    'src/_compiled/css/master.min.css': [
-                        'src/_compiled/css/bootstrap.min.css',
-                        'src/_compiled/css/font-awesome.min.css'
+                    'src/_processed/css/master.min.css': [
+                        'src/_processed/css/bootstrap.min.css',
+                        'src/_processed/css/font-awesome.min.css'
                     ]
                 }]
             },
             css_bootswatch: {
                 files: [{
-                    'src/_compiled/css/master_bootswatch.min.css': [
-                        'src/_compiled/css/bootswatch.min.css',
-                        'src/_compiled/css/font-awesome.min.css'
+                    'src/_processed/css/master_bootswatch.min.css': [
+                        'src/_processed/css/bootswatch.min.css',
+                        'src/_processed/css/font-awesome.min.css'
                     ]
                 }]
             },
             js: {
                 files: [{
-                    'src/_compiled/js/master.min.js': [
-                        'src/_compiled/js/jquery.min.js',
-                        'src/_compiled/js/bootstrap.min.js'
+                    'src/_processed/js/master.min.js': [
+                        'src/_processed/js/jquery.min.js',
+                        'src/_processed/js/bootstrap.min.js'
                     ]
                 }]
             },
             polyfill: {
                 files: [{
-                    'src/_compiled/js/polyfill/master.min.js': [
-                        'src/_compiled/js/polyfill/html5shiv.min.js',
-                        'src/_compiled/js/polyfill/respond.min.js'
+                    'src/_processed/js/polyfill/master.min.js': [
+                        'src/_processed/js/polyfill/html5shiv.min.js',
+                        'src/_processed/js/polyfill/respond.min.js'
                     ]
                 }]
             }
@@ -291,13 +291,13 @@ module.exports = function (grunt) {
                 src: ['dist']
             },
             css: {
-                src: ['src/_compiled/css/*']
+                src: ['src/_processed/css/*']
             },
             js: {
-                src: ['src/_compiled/js/*']
+                src: ['src/_processed/js/*']
             },
             html: {
-                src: ['src/_compiled/html/*']
+                src: ['src/_processed/html/*']
             }
         },
 

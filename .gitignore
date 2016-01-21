@@ -2,4 +2,4 @@
 /bower_components/
 /node_modules/
 /.bowerrc
-/src/_compiled
+/src/_processed
