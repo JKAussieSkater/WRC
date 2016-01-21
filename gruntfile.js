@@ -226,6 +226,15 @@ module.exports = function (grunt) {
                     filter: 'isFile'
                 }]
             },
+            gruntfile: {
+                options: {
+                    process: function (content) {
+                        // Switch - Inverts current setting of the `watch` task
+                        return content.replace(/watch_disabled: {/, 'watch_enabled: {').replace(/watch: {/, 'watch_disabled: {').replace(/watch_enabled: {/, 'watch: {');
+                    }
+                },
+                files: [{ src: ['gruntfile.js'] }]
+            },
             dist: {
                 files: [{
                     expand: true,
@@ -290,6 +299,9 @@ module.exports = function (grunt) {
             dist: {
                 src: ['dist']
             },
+            processed: {
+                src: ['src/_processed']
+            },
             css: {
                 src: ['src/_processed/css/*']
             },
@@ -331,7 +343,7 @@ module.exports = function (grunt) {
                         'src/js',
                         'src/css',
                         'src/html',
-                        'src/image'
+                        'src/images'
                     ]
                 }
             },
@@ -341,7 +353,7 @@ module.exports = function (grunt) {
                         'dist/js',
                         'dist/css',
                         'dist/html',
-                        'dist/image'
+                        'dist/images'
                     ]
                 }
             },
@@ -352,7 +364,7 @@ module.exports = function (grunt) {
             },
             docs: {
                 options: {
-                    create: ['docs/image']
+                    create: ['docs/images']
                 }
             }
         }
@@ -379,6 +391,8 @@ module.exports = function (grunt) {
     grunt.registerTask('Make-Directories', ['mkdir:docs']);
     grunt.registerTask('copy-dist', ['copy:dist']);
 
+    grunt.registerTask('Watch-Switch', ['copy:gruntfile']);
+
     grunt.registerTask('Distribute', [
         'clean:dist',
         'concat',
@@ -386,6 +400,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('Compilation-Tasks', [
+        'clean:processed',
         'Import-Missing-Assets',
         'Process-Files',
         'Minify-SRC'
