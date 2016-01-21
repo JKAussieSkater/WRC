@@ -43,22 +43,20 @@ module.exports = function (grunt) {
                         require('autoprefixer')({browsers: 'last 2 versions'})
                     ]
                 },
-                dist: {
-                    files: [{
-                        expand: true,
-                        cwd: 'src/',
-                        src: [
-                            'css/**/*.css',
-                            '_compiled/css/**/*.css',
-                            '!_compiled/css/**/*.postcss.css'
-                        ],
-                        dest: 'src/_compiled/css/',
-                        ext: '.postcss.css',
-                        rename: function (dest, src) {
-                            return dest + src.replace(/^_compiled\//, '').replace(/^css\//, '');
-                        }
-                    }]
-                }
+                files: [{
+                    expand: true,
+                    cwd: 'src/',
+                    src: [
+                        'css/**/*.css',
+                        '_compiled/css/**/*.css',
+                        '!_compiled/css/**/*.postcss.css'
+                    ],
+                    dest: 'src/_compiled/css/',
+                    ext: '.postcss.css',
+                    rename: function (dest, src) {
+                        return dest + src.replace(/^_compiled\//, '').replace(/^css\//, '');
+                    }
+                }]
             }
         },
 
