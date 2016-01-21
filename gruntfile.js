@@ -25,11 +25,11 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'src/scss/',
                     src: [
-                        '**/*.sass',
-                        '**/*.scss'
+                        '**/*.scss',
+                        '**/*.sass'
                     ],
                     dest: 'src/_processed/css/',
-                    ext: '.css'
+                    ext: '.scss.css'
                 }]
             }
         },
@@ -45,17 +45,25 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: 'src/',
-                    src: [
-                        'css/**/*.css',
-                        '_processed/css/**/*.css',
-                        '!_processed/css/**/*.postcss.css'
-                    ],
+                    cwd: 'src/css/',
+                    src: ['**/*.css'],
                     dest: 'src/_processed/css/',
-                    ext: '.postcss.css',
-                    rename: function (dest, src) {
-                        return dest + src.replace(/^_processed\//, '').replace(/^css\//, '');
-                    }
+                    ext: '.postcss.css'
+                }]
+            },
+            scss: {
+                options: {
+                    map: true,
+                    processors: [
+                        require('autoprefixer')({browsers: 'last 2 versions'})
+                    ]
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'src/_processed/css/',
+                    src: ['**/*.scss.css'],
+                    dest: 'src/_processed/css/',
+                    ext: '.postcss.css'
                 }]
             }
         },
@@ -226,16 +234,6 @@ module.exports = function (grunt) {
                     filter: 'isFile'
                 }]
             },
-            watch_switch: {
-                options: {
-                    process: function (content) {
-                        // Switch - Inverts current setting of the `watch` task
-                        return content.replace(/(\n *)watch_disabled: {/, '$1watch_enabled: {').replace(/(\n *)watch: {/, '$1watch_disabled: {').replace(/(\n *)watch_enabled: {/, '$1watch: {');
-                    }
-                },
-                src: 'gruntfile.js',
-                dest: 'gruntfile.js'
-            },
             dist: {
                 files: [{
                     expand: true,
@@ -318,57 +316,40 @@ module.exports = function (grunt) {
         watch: {
             configFiles: {
                 options: {
+                    event: ['changed'],
                     reload: true
                 },
                 files: ['gruntfile.js']
             },
             css: {
+                options: {
+                    event: ['added', 'changed'],
+                },
                 files: ['src/css/**/*'],
-                tasks: ['cssmin']
+                tasks: ['postcss:css', 'cssmin']
             },
             scss: {
-                files: ['src/scss/**/*.sass', 'src/scss/**/*.scss'],
-                tasks: ['sass:scss']
+                options: {
+                    event: ['added', 'changed'],
+                },
+                files: ['src/scss/**/*.scss', 'src/scss/**/*.sass'],
+                tasks: ['sass']
             },
             js: {
+                options: {
+                    event: ['added', 'changed'],
+                },
                 files: ['src/js/**/*'],
                 tasks: ['uglify']
+            },
+            html: {
+                options: {
+                    event: ['added', 'changed'],
+                },
+                files: ['src/html/**/*'],
+                tasks: ['copy:process__html']
             }
         },
-
-        // Create directory template
-        mkdir: {
-            src: {
-                options: {
-                    create: [
-                        'src/js',
-                        'src/css',
-                        'src/html',
-                        'src/images'
-                    ]
-                }
-            },
-            dist: {
-                options: {
-                    create: [
-                        'dist/js',
-                        'dist/css',
-                        'dist/html',
-                        'dist/images'
-                    ]
-                }
-            },
-            test: {
-                options: {
-                    create: ['test']
-                }
-            },
-            docs: {
-                options: {
-                    create: ['docs/images']
-                }
-            }
-        }
 
     });
 
@@ -381,18 +362,12 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-minify-html');
-    grunt.loadNpmTasks('grunt-mkdir');
     grunt.loadNpmTasks('grunt-postcss');
     grunt.loadNpmTasks('grunt-sass');
 
 
     // Register Grunt tasks
     //grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
-
-    grunt.registerTask('Make-Directories', ['mkdir:docs']);
-    grunt.registerTask('copy-dist', ['copy:dist']);
-
-    grunt.registerTask('Watch-Switch', ['copy:watch_switch']);
 
     grunt.registerTask('Distribute', [
         'clean:dist',
@@ -404,7 +379,7 @@ module.exports = function (grunt) {
         'clean:processed',
         'Import-Missing-Assets',
         'Process-Files',
-        'Minify-SRC'
+        'Minify-Processed'
     ]);
 
     grunt.registerTask('Import-Missing-Assets', [
@@ -415,14 +390,15 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('Process-Files', [
-        'copy:process__html',
-        'sass:scss',
-        'postcss:css'
+        'sass',
+        'postcss',
+        'copy:process__html'
     ]);
 
-    grunt.registerTask('Minify-SRC', [
+    grunt.registerTask('Minify-Processed', [
         'cssmin',
         'uglify',
+        'concat',
         'minifyHtml'
     ]);
 
