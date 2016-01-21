@@ -376,6 +376,7 @@ module.exports = function (grunt) {
     //grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
 
     grunt.registerTask('Make-Directories', ['mkdir:docs']);
+    grunt.registerTask('copy-dist', ['copy:dist']);
 
     grunt.registerTask('Distribute', [
         'clean:dist',
