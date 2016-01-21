@@ -63,7 +63,7 @@ module.exports = function (grunt) {
                     cwd: 'src/_processed/css/',
                     src: ['**/*.scss.css'],
                     dest: 'src/_processed/css/',
-                    ext: '.postcss.css'
+                    ext: '.postcss.scss.css'
                 }]
             }
         },
@@ -79,6 +79,19 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'src/_processed/css/',
                     src: ['**/*.postcss.css'],
+                    dest: 'src/_processed/css/',
+                    ext: '.min.css'
+                }]
+            },
+            scss: {
+                options: {
+                    //banner: '/*\n<%= mybanner %>\n*/\n',
+                    sourceMap: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'src/_processed/css/',
+                    src: ['**/*.postcss.scss.css'],
                     dest: 'src/_processed/css/',
                     ext: '.min.css'
                 }]
@@ -295,21 +308,13 @@ module.exports = function (grunt) {
 
         // Cleans directories which only contain minified files
         clean: {
-            dist: {
-                src: ['dist']
-            },
-            processed: {
-                src: ['src/_processed']
-            },
-            css: {
-                src: ['src/_processed/css/*']
-            },
-            js: {
-                src: ['src/_processed/js/*']
-            },
-            html: {
-                src: ['src/_processed/html/*']
-            }
+            dist: ['dist'],
+            postcss_css: ['!src/_processed/css/**/*.postcss.css'],
+            postcss_scss: ['!src/_processed/css/**/*.postcss.scss.css'],
+            processed: ['src/_processed/css/*'],
+            css: ['src/_processed/css/*'],
+            js: ['src/_processed/js/*'],
+            html: ['src/_processed/html/*']
         },
 
         // Watches `src` files for changes, and performs appropriate tasks on-the-fly
