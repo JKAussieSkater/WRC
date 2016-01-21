@@ -1,6 +1,7 @@
 .DS_Store
 /bower_components/
 /node_modules/
+/src/_compiled/
 /.bowerrc
 /src/css/*
 !/src/css/
