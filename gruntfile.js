@@ -226,14 +226,15 @@ module.exports = function (grunt) {
                     filter: 'isFile'
                 }]
             },
-            gruntfile: {
+            watch_switch: {
                 options: {
                     process: function (content) {
                         // Switch - Inverts current setting of the `watch` task
-                        return content.replace(/watch_disabled: {/, 'watch_enabled: {').replace(/watch: {/, 'watch_disabled: {').replace(/watch_enabled: {/, 'watch: {');
+                        return content.replace(/(\n *)watch_disabled: {/, '$1watch_enabled: {').replace(/(\n *)watch: {/, '$1watch_disabled: {').replace(/(\n *)watch_enabled: {/, '$1watch: {');
                     }
                 },
-                files: [{ src: ['gruntfile.js'] }]
+                src: 'gruntfile.js',
+                dest: 'gruntfile.js'
             },
             dist: {
                 files: [{
@@ -391,7 +392,7 @@ module.exports = function (grunt) {
     grunt.registerTask('Make-Directories', ['mkdir:docs']);
     grunt.registerTask('copy-dist', ['copy:dist']);
 
-    grunt.registerTask('Watch-Switch', ['copy:gruntfile']);
+    grunt.registerTask('Watch-Switch', ['copy:watch_switch']);
 
     grunt.registerTask('Distribute', [
         'clean:dist',
