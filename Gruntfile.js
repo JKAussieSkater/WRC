@@ -60,16 +60,10 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-<<<<<<< HEAD
-                    cwd: 'src/css/origin/',
-                    src: ['**/*.css'],
-                    dest: 'src/css/origin/'
-=======
                     cwd: 'src/_processed/css/',
                     src: ['**/*.scss.css'],
                     dest: 'src/_processed/css/',
                     ext: '.postcss.scss.css'
->>>>>>> Revised-Directory-Structure
                 }]
             }
         },
