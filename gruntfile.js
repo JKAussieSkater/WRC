@@ -25,18 +25,18 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'src/scss/',
                     src: [
-                        '**/*.sass',
-                        '**/*.scss'
+                        '**/*.scss',
+                        '**/*.sass'
                     ],
-                    dest: 'src/css/origin/',
-                    ext: '.css'
+                    dest: 'src/_processed/css/',
+                    ext: '.scss.css'
                 }]
             }
         },
 
         // Enhances CSS in order to be compatible with more browsers
         postcss: {
-            css_origin: {
+            css: {
                 options: {
                     map: true,
                     processors: [
@@ -45,9 +45,31 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
+                    cwd: 'src/css/',
+                    src: ['**/*.css'],
+                    dest: 'src/_processed/css/',
+                    ext: '.postcss.css'
+                }]
+            },
+            scss: {
+                options: {
+                    map: true,
+                    processors: [
+                        require('autoprefixer')({browsers: 'last 2 versions'})
+                    ]
+                },
+                files: [{
+                    expand: true,
+<<<<<<< HEAD
                     cwd: 'src/css/origin/',
                     src: ['**/*.css'],
                     dest: 'src/css/origin/'
+=======
+                    cwd: 'src/_processed/css/',
+                    src: ['**/*.scss.css'],
+                    dest: 'src/_processed/css/',
+                    ext: '.postcss.scss.css'
+>>>>>>> Revised-Directory-Structure
                 }]
             }
         },
@@ -56,14 +78,25 @@ module.exports = function (grunt) {
         cssmin: {
             css: {
                 options: {
-                    //banner: '/*\n<%= mybanner %>\n*/\n',
                     sourceMap: true
                 },
                 files: [{
                     expand: true,
-                    cwd: 'src/css/origin/',
-                    src: ['**/*.css'],
-                    dest: 'src/css/',
+                    cwd: 'src/_processed/css/',
+                    src: ['**/*.postcss.css'],
+                    dest: 'src/_processed/css/',
+                    ext: '.min.css'
+                }]
+            },
+            scss: {
+                options: {
+                    sourceMap: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'src/_processed/css/',
+                    src: ['**/*.postcss.scss.css'],
+                    dest: 'src/_processed/css/',
                     ext: '.min.css'
                 }]
             }
@@ -79,9 +112,9 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: 'src/js/origin/',
+                    cwd: 'src/js/',
                     src: ['**/*.js'],
-                    dest: 'src/js/',
+                    dest: 'src/_processed/js/',
                     ext: '.min.js'
                 }]
             }
@@ -95,9 +128,10 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: 'src/html/_minified/',
-                    src: ['**'],
-                    dest: 'src/html/_minified/',
+                    cwd: 'src/_processed/html/',
+                    src: ['**/*.processed.html'],
+                    dest: 'src/_processed/html/',
+                    ext: '.html',
                     filter: 'isFile'
                 }]
             }
@@ -112,16 +146,11 @@ module.exports = function (grunt) {
                     cwd: 'components/bootswatch/',
                     src: ['superhero/**'],
                     dest: 'src/scss/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        var output = dest + src;
-                        //Copies but doesn't replace existing files
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
+                    filter: function (dest) {
+                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '');
+                        if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
+                        else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
+                        else { return true; }
                     }
                 }]
             },
@@ -136,17 +165,14 @@ module.exports = function (grunt) {
                         'javascripts/bootstrap.js'
                     ],
                     dest: 'src/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        //Renames folders
-                        var output = dest + src.replace(/^stylesheets\//, 'scss/').replace(/^scss\/_/, 'scss/').replace(/^javascripts\//, 'js/origin/');
-                        //Copies but doesn't replace existing files
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
+                    filter: function (dest) {
+                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^stylesheets\//, 'scss/').replace(/^scss\/_/, 'scss/').replace(/^javascripts\//, 'js/');
+                        if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
+                        else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
+                        else { return true; }
+                    },
+                    rename: function (dest, src) {
+                        return dest + src.replace(/^stylesheets\//, 'scss/').replace(/^scss\/_/, 'scss/').replace(/^javascripts\//, 'js/');
                     }
                 }]
             },
@@ -163,17 +189,14 @@ module.exports = function (grunt) {
                         'respond/dest/respond.src.js'
                     ],
                     dest: 'src/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        //Renames folders
-                        var output = dest + src.replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/origin/').replace(/^html5shiv\/dist\//, 'js/origin/polyfill/').replace(/^respond\/dest\/respond.src.js/, 'js/origin/polyfill/respond.js');
-                        //Copies but doesn't replace existing files
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
+                    filter: function (dest) {
+                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond.src.js/, 'js/polyfill/respond.js');
+                        if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
+                        else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
+                        else { return true; }
+                    },
+                    rename: function (dest, src) {
+                        return dest + src.replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond.src.js/, 'js/polyfill/respond.js');
                     }
                 }]
             },
@@ -195,27 +218,25 @@ module.exports = function (grunt) {
                         '_variables.scss'
                     ],
                     dest: 'src/scss/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        //Renames folders
-                        var output = dest + src.replace(/^_/, 'font-awesome/_');
-                        //Copies but doesn't replace existing files
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
+                    filter: function (dest) {
+                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^_/, 'font-awesome/_');
+                        if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
+                        else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
+                        else { return true; }
+                    },
+                    rename: function (dest, src) {
+                        return dest + src.replace(/^_/, 'font-awesome/_');
                     }
                 }]
             },
-            process_html: {
+            process__html: {
                 options: {
                     process: function (content, path) {
                         var strDepth = '../';
                         for (var i = path.match(/\//g).length - 2; i; i--) {
                             strDepth = strDepth + '../';
                         }
+
                         // RegExp to find an opening and closing custom tag
                         // The closing tag is mentioned twice; this helps the opening tag match with the first available closing tag (as opposed to the last found tag)
                         return content.replace(/<!--concat:css-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<link href="' + strDepth + 'css/master.min.css" rel="stylesheet">').replace(/<!--concat:js-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<script src="' + strDepth + 'js/master.min.js"></script>').replace(/<!--concat:polyfill-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<!--[if lt IE 9]><script src="' + strDepth + 'js/polyfill/master.min.js"></script><![endif]-->').replace(/<!--concat:css_bootswatch-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<link href="' + strDepth + 'css/master_bootswatch.min.css" rel="stylesheet">');
@@ -224,78 +245,29 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/html/',
-                    src: ['**', '!_minified/**'],
-                    dest: 'src/html/_minified/',
+                    src: ['**'],
+                    dest: 'src/_processed/html/',
+                    ext: '.processed.html',
                     filter: 'isFile'
-                }]
-            },
-            css_origin: {
-                files: [{
-                    expand: true,
-                    cwd: 'src/css/',
-                    src: [
-                        '**',
-                        '!origin/**',
-                        '!**/*.min.css',
-                        '!**/*.min.css.map'
-                    ],
-                    dest: 'src/css/origin/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        //Copies but doesn't replace existing files
-                        var output = dest + src;
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
-                    }
-                }]
-            },
-            js_origin: {
-                files: [{
-                    expand: true,
-                    cwd: 'src/js/',
-                    src: [
-                        '**',
-                        '!origin/**',
-                        '!**/*.min.js',
-                        '!**/*.min.js.map'
-                    ],
-                    dest: 'src/js/origin/',
-                    filter: 'isFile',
-                    rename: function (dest, src, cwd) {
-                        //Copies but doesn't replace existing files
-                        var output = dest + src;
-                        if (grunt.file.exists(output)) {
-                            console.log('Not replacing existing file: ' + output);
-                            return '.DELETE/' + src;
-                        } else {
-                            return output;
-                        }
-                    }
                 }]
             },
             dist: {
                 files: [{
                     expand: true,
-                    cwd: 'src/',
+                    cwd: 'src/_processed/',
                     src: [
-                        'css/**',
-                        '!css/origin/**',
-                        'fonts/**',
-                        'html/_minified/**',
-                        'images/**',
-                        'js/**',
-                        '!js/origin/**',
-                        '../LICENSE',
-                        '../README.md'
+                        'css/**/*.min.css',
+                        '../fonts/**',
+                        'html/**/*.html', '!html/**/*.processed.html',
+                        '../images/**',
+                        'js/**/*.min.js',
+                        '../../LICENSE',
+                        '../../README.md'
                     ],
                     dest: 'dist/',
                     filter: 'isFile',
                     rename: function (dest, src) {
-                        return dest + src.replace(/^html\/_minified/, 'html');
+                        return dest + src.replace(/^(\.\.\/)+/, '');
                     }
                 }]
             }
@@ -306,33 +278,33 @@ module.exports = function (grunt) {
         concat: {
             css: {
                 files: [{
-                    'dist/css/master.min.css': [
-                        'src/css/bootstrap.min.css',
-                        'src/css/font-awesome.min.css'
+                    'src/_processed/css/master.min.css': [
+                        'src/_processed/css/bootstrap.min.css',
+                        'src/_processed/css/font-awesome.min.css'
                     ]
                 }]
             },
             css_bootswatch: {
                 files: [{
-                    'dist/css/master_bootswatch.min.css': [
-                        'src/css/bootswatch.min.css',
-                        'src/css/font-awesome.min.css'
+                    'src/_processed/css/master_bootswatch.min.css': [
+                        'src/_processed/css/bootswatch.min.css',
+                        'src/_processed/css/font-awesome.min.css'
                     ]
                 }]
             },
             js: {
                 files: [{
-                    'dist/js/master.min.js': [
-                        'src/js/jquery.min.js',
-                        'src/js/bootstrap.min.js'
+                    'src/_processed/js/master.min.js': [
+                        'src/_processed/js/jquery.min.js',
+                        'src/_processed/js/bootstrap.min.js'
                     ]
                 }]
             },
             polyfill: {
                 files: [{
-                    'dist/js/polyfill/master.min.js': [
-                        'src/js/polyfill/html5shiv.min.js',
-                        'src/js/polyfill/respond.min.js'
+                    'src/_processed/js/polyfill/master.min.js': [
+                        'src/_processed/js/polyfill/html5shiv.min.js',
+                        'src/_processed/js/polyfill/respond.min.js'
                     ]
                 }]
             }
@@ -340,98 +312,71 @@ module.exports = function (grunt) {
 
         // Cleans directories which only contain minified files
         clean: {
-            dot_delete: {src: ['.DELETE']},
-            dist: {
-                src: ['dist']
-            },
-            css_minified: {
-                src: ['src/css/*', '!src/css/origin/**']
-            },
-            js_minified: {
-                src: ['src/js/*', '!src/js/origin/**']
-            },
-            html_minified: {
-                src: ['src/html/_minified/**']
-            }
+            dist: ['dist'],
+            sass_scss: [
+                'src/_processed/css/**/*.scss.css',
+                'src/_processed/css/**/*.scss.css.map',
+                '!src/_processed/css/**/*.postcss.scss.css',
+                '!src/_processed/css/**/*.postcss.scss.css.map'
+            ],
+            postcss_css: [
+                'src/_processed/css/**/*.postcss.css',
+                'src/_processed/css/**/*.postcss.css.map'
+            ],
+            postcss_scss: [
+                'src/_processed/css/**/*.postcss.scss.css',
+                'src/_processed/css/**/*.postcss.scss.css.map'
+            ],
+            copy_process__html: ['src/_processed/html/**/*.processed.html'],
+            processed: ['src/_processed/*'],
+            processed_css: ['src/_processed/css/*'],
+            processed_js: ['src/_processed/js/*'],
+            processed_html: ['src/_processed/html/*']
         },
 
         // Watches `src` files for changes, and performs appropriate tasks on-the-fly
         watch: {
             configFiles: {
                 options: {
+                    event: ['changed'],
                     reload: true
                 },
                 files: ['gruntfile.js']
             },
-            scss: {
-                files: ['src/scss/**/*.sass', 'src/scss/**/*.scss'],
-                tasks: ['sass:scss']
-            },
             css: {
-                files: [
-                    'src/css/**/*',
-                    '!src/css/**/*.min.css',
-                    '!src/css/**/*.min.css.map',
-                    '!src/css/origin/**'
-                ],
-                tasks: ['copy:css_origin', 'clean:css_minified']
+                options: {
+                    event: ['added', 'changed'],
+                },
+                files: ['src/css/**/*'],
+                tasks: ['postcss:css', 'cssmin:css', 'clean:postcss_css']
             },
-            css_origin: {
-                files: ['src/css/origin/**/*.css'],
-                tasks: ['postcss:css_origin', 'cssmin:css']
+            scss: {
+                options: {
+                    event: ['added', 'changed'],
+                },
+                files: ['src/scss/**/*.scss', 'src/scss/**/*.sass'],
+                tasks: ['sass', 'postcss', 'clean:sass_scss', 'cssmin:scss', 'clean:postcss_scss', 'concat']
             },
             js: {
-                files: [
-                    'src/js/**/*',
-                    '!src/js/**/*.min.js',
-                    '!src/js/**/*.min.js.map',
-                    '!src/js/origin/**'
-                ],
-                tasks: ['copy:js_origin', 'clean:js_minified']
+                options: {
+                    event: ['added', 'changed'],
+                },
+                files: ['src/js/**/*'],
+                tasks: ['uglify']
             },
-            js_origin: {
-                files: ['src/js/origin/**/*.js'],
-                tasks: ['uglify:js']
+            html: {
+                options: {
+                    event: ['added', 'changed'],
+                },
+                files: ['src/html/**/*'],
+                tasks: ['copy:process__html', 'minifyHtml', 'clean:copy_process__html']
             }
         },
-
-        // Create directory template
-        mkdir: {
-            src: {
-                options: {
-                    create: [
-                        'src/js',
-                        'src/css',
-                        'src/html',
-                        'src/image'
-                    ]
-                }
-            },
-            dist: {
-                options: {
-                    create: [
-                        'dist/js',
-                        'dist/css',
-                        'dist/html',
-                        'dist/image'
-                    ]
-                }
-            },
-            test: {
-                options: {
-                    create: ['test']
-                }
-            },
-            docs: {
-                options: {
-                    create: ['docs/image']
-                }
-            }
-        }
 
     });
 
     // Load Grunt plugins
+    require('time-grunt')(grunt);
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -439,7 +384,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-minify-html');
-    grunt.loadNpmTasks('grunt-mkdir');
     grunt.loadNpmTasks('grunt-postcss');
     grunt.loadNpmTasks('grunt-sass');
 
@@ -447,48 +391,34 @@ module.exports = function (grunt) {
     // Register Grunt tasks
     grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
 
-    grunt.registerTask('Make-Directories', ['mkdir:docs']);
-
-    grunt.registerTask('Distribute', [
+    grunt.registerTask('Distribute', ['copy:dist']);
+    grunt.registerTask('Clean-Distribute', [
         'clean:dist',
-        'concat',
         'copy:dist'
     ]);
 
     grunt.registerTask('Compilation-Tasks', [
+        'clean:processed',
         'Import-Missing-Assets',
-        'Pre-Minify-Cleanup',
-        'Preprocess-Sass-CSS',
-        'Minify-SRC'
+        'Process-Files',
+        'Minify-Processed'
     ]);
-
     grunt.registerTask('Import-Missing-Assets', [
         'copy:process__fontawesome',
         'copy:bower_components',
         'copy:bootstrap_assets',
-        'copy:components',
-        'clean:dot_delete'
+        'copy:components'
     ]);
-
-    grunt.registerTask('Pre-Minify-Cleanup', [
-        'copy:css_origin',
-        'clean:css_minified',
-        'copy:js_origin',
-        'clean:js_minified',
-        'clean:html_minified',
-        'clean:dot_delete'
+    grunt.registerTask('Process-Files', [
+        'sass',
+        'postcss', 'clean:sass_scss',
+        'copy:process__html'
     ]);
-
-    grunt.registerTask('Preprocess-Sass-CSS', [
-        'sass:scss',
-        'postcss:css_origin'
-    ]);
-
-    grunt.registerTask('Minify-SRC', [
-        'cssmin',
+    grunt.registerTask('Minify-Processed', [
+        'cssmin', 'clean:postcss_css', 'clean:postcss_scss',
         'uglify',
-        'copy:process_html',
-        'minifyHtml'
+        'concat',
+        'minifyHtml', 'clean:copy_process__html'
     ]);
 
 };

@@ -3,10 +3,4 @@
 /node_modules/
 /src/_compiled/
 /.bowerrc
-/src/css/*
-!/src/css/
-!/src/css/origin
-/src/js/*
-!/src/js/
-!/src/js/origin
-/src/html/_minified
+/src/_processed/
