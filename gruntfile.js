@@ -309,12 +309,17 @@ module.exports = function (grunt) {
         // Cleans directories which only contain minified files
         clean: {
             dist: ['dist'],
-            postcss_css: ['!src/_processed/css/**/*.postcss.css'],
-            postcss_scss: ['!src/_processed/css/**/*.postcss.scss.css'],
-            processed: ['src/_processed/css/*'],
-            css: ['src/_processed/css/*'],
-            js: ['src/_processed/js/*'],
-            html: ['src/_processed/html/*']
+            sass_scss: [
+                'src/_processed/css/**/*.scss.css',
+                '!src/_processed/css/**/*.postcss.scss.css'
+            ],
+            postcss_css: ['src/_processed/css/**/*.postcss.css'],
+            postcss_scss: ['src/_processed/css/**/*.postcss.scss.css'],
+            process__html: ['src/_processed/html/**/*.processed.html'],
+            processed: ['src/_processed/*'],
+            processed_css: ['src/_processed/css/*'],
+            processed_js: ['src/_processed/js/*'],
+            processed_html: ['src/_processed/html/*']
         },
 
         // Watches `src` files for changes, and performs appropriate tasks on-the-fly
@@ -331,14 +336,14 @@ module.exports = function (grunt) {
                     event: ['added', 'changed'],
                 },
                 files: ['src/css/**/*'],
-                tasks: ['postcss:css', 'cssmin']
+                tasks: ['postcss:css', 'cssmin', 'clean:postcss_css']
             },
             scss: {
                 options: {
                     event: ['added', 'changed'],
                 },
                 files: ['src/scss/**/*.scss', 'src/scss/**/*.sass'],
-                tasks: ['sass']
+                tasks: ['sass', 'postcss', 'clean:sass_scss', 'cssmin', 'clean:postcss_scss', 'concat']
             },
             js: {
                 options: {
@@ -352,7 +357,7 @@ module.exports = function (grunt) {
                     event: ['added', 'changed'],
                 },
                 files: ['src/html/**/*'],
-                tasks: ['copy:process__html']
+                tasks: ['copy:process__html', 'minifyHtml', 'clean:copy_process__html']
             }
         },
 
@@ -372,11 +377,12 @@ module.exports = function (grunt) {
 
 
     // Register Grunt tasks
-    //grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
+    grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
 
-    grunt.registerTask('Distribute', [
+    grunt.registerTask('Distribute', ['copy:dist']);
+
+    grunt.registerTask('Clean-Distribute', [
         'clean:dist',
-        'concat',
         'copy:dist'
     ]);
 
@@ -396,15 +402,15 @@ module.exports = function (grunt) {
 
     grunt.registerTask('Process-Files', [
         'sass',
-        'postcss',
+        'postcss', 'clean:sass_scss',
         'copy:process__html'
     ]);
 
     grunt.registerTask('Minify-Processed', [
-        'cssmin',
+        'cssmin', 'clean:postcss_css', 'clean:postcss_scss',
         'uglify',
         'concat',
-        'minifyHtml'
+        'minifyHtml', 'clean:copy_process__html'
     ]);
 
 };
