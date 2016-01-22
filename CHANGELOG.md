@@ -6,7 +6,6 @@
 * __Bugs:__ [GitHub](https://github.com/JKAussieSkater/WRC/issues)
 
 ## Future Ideas
-* Create an optimal File-Tree for managing project
 * Fix multiple source map problem on distributed files
 
 ### Longterm Ideas
@@ -14,8 +13,12 @@
 
 ## Changelog
 
-#### [2016-XX-XX] v0.X.X
-* Changing file-tree
+#### [2016-01-22] v0.1.0
+* Improved File Tree directory structure
+* Optimised Grunt code
+  * Copy but no overwriting
+  * HTML Processing
+  * `watch` routines
 
 #### [2016-01-07] v0.0.1
 * Initial release.
