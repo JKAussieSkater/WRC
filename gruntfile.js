@@ -315,7 +315,7 @@ module.exports = function (grunt) {
             ],
             postcss_css: ['src/_processed/css/**/*.postcss.css'],
             postcss_scss: ['src/_processed/css/**/*.postcss.scss.css'],
-            process__html: ['src/_processed/html/**/*.processed.html'],
+            copy_process__html: ['src/_processed/html/**/*.processed.html'],
             processed: ['src/_processed/*'],
             processed_css: ['src/_processed/css/*'],
             processed_js: ['src/_processed/js/*'],
