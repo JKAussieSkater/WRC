@@ -72,7 +72,6 @@ module.exports = function (grunt) {
         cssmin: {
             css: {
                 options: {
-                    //banner: '/*\n<%= mybanner %>\n*/\n',
                     sourceMap: true
                 },
                 files: [{
@@ -85,7 +84,6 @@ module.exports = function (grunt) {
             },
             scss: {
                 options: {
-                    //banner: '/*\n<%= mybanner %>\n*/\n',
                     sourceMap: true
                 },
                 files: [{
@@ -311,10 +309,18 @@ module.exports = function (grunt) {
             dist: ['dist'],
             sass_scss: [
                 'src/_processed/css/**/*.scss.css',
-                '!src/_processed/css/**/*.postcss.scss.css'
+                'src/_processed/css/**/*.scss.css.map',
+                '!src/_processed/css/**/*.postcss.scss.css',
+                '!src/_processed/css/**/*.postcss.scss.css.map'
             ],
-            postcss_css: ['src/_processed/css/**/*.postcss.css'],
-            postcss_scss: ['src/_processed/css/**/*.postcss.scss.css'],
+            postcss_css: [
+                'src/_processed/css/**/*.postcss.css',
+                'src/_processed/css/**/*.postcss.css.map'
+            ],
+            postcss_scss: [
+                'src/_processed/css/**/*.postcss.scss.css',
+                'src/_processed/css/**/*.postcss.scss.css.map'
+            ],
             copy_process__html: ['src/_processed/html/**/*.processed.html'],
             processed: ['src/_processed/*'],
             processed_css: ['src/_processed/css/*'],
@@ -336,14 +342,14 @@ module.exports = function (grunt) {
                     event: ['added', 'changed'],
                 },
                 files: ['src/css/**/*'],
-                tasks: ['postcss:css', 'cssmin', 'clean:postcss_css']
+                tasks: ['postcss:css', 'cssmin:css', 'clean:postcss_css']
             },
             scss: {
                 options: {
                     event: ['added', 'changed'],
                 },
                 files: ['src/scss/**/*.scss', 'src/scss/**/*.sass'],
-                tasks: ['sass', 'postcss', 'clean:sass_scss', 'cssmin', 'clean:postcss_scss', 'concat']
+                tasks: ['sass', 'postcss', 'clean:sass_scss', 'cssmin:scss', 'clean:postcss_scss', 'concat']
             },
             js: {
                 options: {
@@ -380,7 +386,6 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
 
     grunt.registerTask('Distribute', ['copy:dist']);
-
     grunt.registerTask('Clean-Distribute', [
         'clean:dist',
         'copy:dist'
@@ -392,20 +397,17 @@ module.exports = function (grunt) {
         'Process-Files',
         'Minify-Processed'
     ]);
-
     grunt.registerTask('Import-Missing-Assets', [
         'copy:process__fontawesome',
         'copy:bower_components',
         'copy:bootstrap_assets',
         'copy:components'
     ]);
-
     grunt.registerTask('Process-Files', [
         'sass',
         'postcss', 'clean:sass_scss',
         'copy:process__html'
     ]);
-
     grunt.registerTask('Minify-Processed', [
         'cssmin', 'clean:postcss_css', 'clean:postcss_scss',
         'uglify',
