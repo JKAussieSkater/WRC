@@ -332,7 +332,7 @@ module.exports = function (grunt) {
                 'src/_processed/css/**/*.postcss.scss.css',
                 'src/_processed/css/**/*.postcss.scss.css.map'
             ],
-            copy_process__html: ['src/_processed/html/**/*.dprocessed.html'],
+            copy_process__html: ['src/_processed/html/**/*.processed.html'],
             processed: ['src/_processed/*'],
             processed_css: ['src/_processed/css/*'],
             processed_js: ['src/_processed/js/*'],
