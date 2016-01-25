@@ -134,8 +134,8 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: 'src/',
                     src: [
-                        'fonts/',
-                        'images/'
+                        'fonts/**',
+                        'images/**'
                     ],
                     dest: 'src/_processed/'
                 }]
