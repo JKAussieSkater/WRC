@@ -162,7 +162,7 @@ module.exports = function (grunt) {
             }
         },
 
-// Compiles Sass files into CSS files
+        // Compiles Sass files into CSS files
         sass: {
             scss: {
                 options: {
