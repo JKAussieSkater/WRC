@@ -356,7 +356,7 @@ module.exports = function (grunt) {
                 options: {
                     event: ['added', 'changed'],
                 },
-                files: ['src/css/**/*'],
+                files: ['src/css/**'],
                 tasks: ['postcss:css', 'cssmin:css', 'clean:postcss_css']
             },
             scss: {
@@ -370,14 +370,14 @@ module.exports = function (grunt) {
                 options: {
                     event: ['added', 'changed'],
                 },
-                files: ['src/js/**/*'],
+                files: ['src/js/**'],
                 tasks: ['uglify']
             },
             html: {
                 options: {
                     event: ['added', 'changed'],
                 },
-                files: ['src/html/**/*'],
+                files: ['src/html/**', 'src/embed/**'],
                 tasks: ['copy:process__html', 'minifyHtml', 'clean:copy_process__html']
             }
         },
