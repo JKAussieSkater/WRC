@@ -15,7 +15,7 @@ module.exports = function (grunt) {
                     '-------------------------------------\n' +
                     '     Version: <%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>)',
 
-        // Copies files from 3rd party sources to the `src` folder
+        // Copies files from 3rd party sources to the `src` folder (without replacing existing files)
         // Copies files from `src` folder to `dist` folder on production
         copy: {
             components: {
@@ -26,6 +26,7 @@ module.exports = function (grunt) {
                     dest: 'src/scss/',
                     filter: function (dest) {
                         var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '');
+
                         if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
                         else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
                         else { return true; }
@@ -45,6 +46,7 @@ module.exports = function (grunt) {
                     dest: 'src/',
                     filter: function (dest) {
                         var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^stylesheets\//, 'scss/').replace(/^scss\/_/, 'scss/').replace(/^javascripts\//, 'js/');
+
                         if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
                         else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
                         else { return true; }
@@ -69,6 +71,7 @@ module.exports = function (grunt) {
                     dest: 'src/',
                     filter: function (dest) {
                         var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond.src.js/, 'js/polyfill/respond.js');
+
                         if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
                         else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
                         else { return true; }
@@ -98,6 +101,7 @@ module.exports = function (grunt) {
                     dest: 'src/scss/',
                     filter: function (dest) {
                         var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^_/, 'font-awesome/_');
+
                         if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
                         else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
                         else { return true; }
@@ -115,9 +119,9 @@ module.exports = function (grunt) {
                             strDepth = strDepth + '../';
                         }
 
-                        // RegExp to find an opening and closing custom tag
-                        // The closing tag is mentioned twice; this helps the opening tag match with the first available closing tag (as opposed to the last found tag)
-                        return content.replace(/\/src\/_processed\//g, strDepth).replace(/<!--embed:css-->(?:(?!<!--\/embed-->)(?:.|\n))*<!--\/embed-->/g, '<link href="' + strDepth + 'css/master.min.css" rel="stylesheet">').replace(/<!--embed:js-->(?:(?!<!--\/embed-->)(?:.|\n))*<!--\/embed-->/g, '<script src="' + strDepth + 'js/master.min.js"></script>').replace(/<!--embed:polyfill-->(?:(?!<!--\/embed-->)(?:.|\n))*<!--\/embed-->/g, '<!--[if lt IE 9]><script src="' + strDepth + 'js/polyfill/master.min.js"></script><![endif]-->').replace(/<!--embed:css_bootswatch-->(?:(?!<!--\/embed-->)(?:.|\n))*<!--\/embed-->/g, '<link href="' + strDepth + 'css/master_bootswatch.min.css" rel="stylesheet">');
+                        // Replaces <!--embed:xyz--><!--/embed--> tags with the `src/embed/xyz` code
+                        // Then converts all references to `/src/_processed/` into relative paths
+                        return content.replace(/<!--embed:(.+)-->(?:(?!<!--\/embed-->)(?:.|\n))*<!--\/embed-->/g, function(match, $1) {return grunt.file.read('src/embed/' + $1)}).replace(/\/src\/_processed\//g, strDepth);
                     }
                 },
                 files: [{
