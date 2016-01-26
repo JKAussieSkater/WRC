@@ -117,7 +117,7 @@ module.exports = function (grunt) {
 
                         // RegExp to find an opening and closing custom tag
                         // The closing tag is mentioned twice; this helps the opening tag match with the first available closing tag (as opposed to the last found tag)
-                        return content.replace(/\/src\/_processed\//g, strDepth).replace(/<!--concat:css-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<link href="' + strDepth + 'css/master.min.css" rel="stylesheet">').replace(/<!--concat:js-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<script src="' + strDepth + 'js/master.min.js"></script>').replace(/<!--concat:polyfill-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<!--[if lt IE 9]><script src="' + strDepth + 'js/polyfill/master.min.js"></script><![endif]-->').replace(/<!--concat:css_bootswatch-->(?:(?!<!--\/concat-->)(?:.|\n))*<!--\/concat-->/g, '<link href="' + strDepth + 'css/master_bootswatch.min.css" rel="stylesheet">');
+                        return content.replace(/\/src\/_processed\//g, strDepth).replace(/<!--embed:css-->(?:(?!<!--\/embed-->)(?:.|\n))*<!--\/embed-->/g, '<link href="' + strDepth + 'css/master.min.css" rel="stylesheet">').replace(/<!--embed:js-->(?:(?!<!--\/embed-->)(?:.|\n))*<!--\/embed-->/g, '<script src="' + strDepth + 'js/master.min.js"></script>').replace(/<!--embed:polyfill-->(?:(?!<!--\/embed-->)(?:.|\n))*<!--\/embed-->/g, '<!--[if lt IE 9]><script src="' + strDepth + 'js/polyfill/master.min.js"></script><![endif]-->').replace(/<!--embed:css_bootswatch-->(?:(?!<!--\/embed-->)(?:.|\n))*<!--\/embed-->/g, '<link href="' + strDepth + 'css/master_bootswatch.min.css" rel="stylesheet">');
                     }
                 },
                 files: [{
