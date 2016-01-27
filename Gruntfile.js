@@ -348,9 +348,11 @@ module.exports = function (grunt) {
             configFiles: {
                 options: {
                     event: ['changed'],
+                    spawn: false,
                     reload: true
                 },
-                files: ['gruntfile.js']
+                files: ['gruntfile.js'],
+                tasks: ['end-watch']
             },
             css: {
                 options: {
@@ -430,5 +432,7 @@ module.exports = function (grunt) {
         'concat',
         'minifyHtml', 'clean:copy_process__html'
     ]);
+
+    grunt.registerTask('end-watch', function() { process.exit(1); });
 
 };
