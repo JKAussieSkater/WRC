@@ -121,7 +121,7 @@ module.exports = function (grunt) {
 
                         // Replaces <!--embed:xyz--><!--/embed--> tags with the `src/embed/xyz` code
                         // Then converts all references to `/src/_processed/` into relative paths
-                        return content.replace(/<!--embed:(.+)-->(?:(?!<!--\/embed-->)(?:.|\n))*<!--\/embed-->/g, function(match, $1) {return grunt.file.read('src/embed/' + $1)}).replace(/\/src\/_processed\//g, strDepth);
+                        return content.replace(/<!--embed:(.+)-->(?:(?!<!--\/embed-->).|\n)*<!--\/embed-->/g, function (match, $1) {return grunt.file.read('src/embed/' + $1)}).replace(/\/src\/_processed\//g, strDepth);
                     }
                 },
                 files: [{
