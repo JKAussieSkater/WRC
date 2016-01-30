@@ -91,9 +91,9 @@ module.exports = function (grunt) {
             process__fontawesome: {
                 options: {
                     process: function (content, path) {
-                        if (path.test(/font-awesome\.scss/i)) {
+                        if (/font-awesome\.scss/i.test(path)) {
                             return content.replace(/@import "/g, '@import "font-awesome/');
-                        } else if (path.test(/_variables\.scss/i)) {
+                        } else if (/_variables\.scss/i.test(path)) {
                             return content.replace(/"\.\.\/fonts"/, '"../fonts/font-awesome"');
                         }
                     }
@@ -130,11 +130,11 @@ module.exports = function (grunt) {
                         }
                         /*jslint plusplus: false */
 
-                        if (content.test(/data-toggle=['"]popover['"]/i)) {
+                        if (/data-toggle=['"]popover['"]/i.test(content)) {
                             content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/\/\/activate:bootstrap-popover\/\//i, grunt.file.read('src/embed/activate/bootstrap-popover'));
                         }
 
-                        if (content.test(/data-toggle=['"]tooltip['"]/i)) {
+                        if (/data-toggle=['"]tooltip['"]/i.test(content)) {
                             content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/\/\/activate:bootstrap-tooltip\/\//i, grunt.file.read('src/embed/activate/bootstrap-tooltip'));
                         }
 
