@@ -33,7 +33,16 @@
         <![endif]-->
     <!--/embed-->
 
-    <!--activate/-->
+    <!--activate/--><!--embed:remove-->
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="popover"]').popover();
+        });
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+    <!--/embed-->
 
     <!--embed:remove/-->
     <style>
