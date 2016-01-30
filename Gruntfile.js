@@ -119,6 +119,14 @@ module.exports = function (grunt) {
                             strDepth = strDepth + '../';
                         }
 
+                        if (~content.indexOf('data-toggle="tooltip"')) {
+                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/<!--activate:bootstrap-tooltip\/-->/i, grunt.file.read('src/embed/activate/bootstrap-tooltip'));
+                        }
+
+                        if (~content.indexOf('data-toggle="popover"')) {
+                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/<!--activate:bootstrap-popover\/-->/i, grunt.file.read('src/embed/activate/bootstrap-popover'));
+                        }
+
                         // Replaces <!--embed:xyz--><!--/embed--> tags with the `src/embed/xyz` code
                         // Then converts all references to `/tmp/` into relative paths
                         return content.replace(/<!--embed:((?:(?!\/?-->).)+)(?:\/-->|-->(?:(?!<!--\/embed-->).|\n)*<!--\/embed-->)/g, function (match, $1) {return grunt.file.read('src/embed/' + $1)}).replace(/\/tmp\//g, strDepth);
