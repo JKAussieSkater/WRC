@@ -92,9 +92,9 @@ module.exports = function (grunt) {
                 options: {
                     process: function (content, path) {
                         if (/font-awesome\.scss/i.test(path)) {
-                            return content.replace(/@import "/g, '@import "font-awesome/');
+                            return content.replace(/@import ('|")/g, '@import $1font-awesome/');
                         } else if (/_variables\.scss/i.test(path)) {
-                            return content.replace(/"\.\.\/fonts"/, '"../fonts/font-awesome"');
+                            return content.replace(/('|")\.\.\/fonts\1/, '$1../fonts/font-awesome$1');
                         }
                     }
                 },
@@ -136,11 +136,11 @@ module.exports = function (grunt) {
                         content = content.replace(/<!--embed:((?:(?!\/?-->).)+)(?:\/-->|-->(?:(?!<!--\/embed-->).|\n)*<!--\/embed-->)/g, function (match, $1) {return grunt.file.read('src/embed/' + $1); }).replace(/\/tmp\//g, strDepth);
                         /*jslint regexp: false */
 
-                        if (/data-toggle=(['"])popover\1/i.test(content)) {
+                        if (/data-toggle=('|")popover\1/i.test(content)) {
                             content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/\/\/activate:bootstrap-popover\/\//i, grunt.file.read('src/embed/activate/bootstrap-popover'));
                         }
 
-                        if (/data-toggle=(['"])tooltip\1/i.test(content)) {
+                        if (/data-toggle=('|")tooltip\1/i.test(content)) {
                             content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/\/\/activate:bootstrap-tooltip\/\//i, grunt.file.read('src/embed/activate/bootstrap-tooltip'));
                         }
 
