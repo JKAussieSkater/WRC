@@ -120,11 +120,11 @@ module.exports = function (grunt) {
                         }
 
                         if (~content.indexOf('data-toggle="tooltip"')) {
-                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/<!--activate:bootstrap-tooltip\/-->/i, grunt.file.read('src/embed/activate/bootstrap-tooltip'));
+                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/\/\/activate:bootstrap-popover\/\//-->/i, grunt.file.read('src/embed/activate/bootstrap-tooltip'));
                         }
 
                         if (~content.indexOf('data-toggle="popover"')) {
-                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/<!--activate:bootstrap-popover\/-->/i, grunt.file.read('src/embed/activate/bootstrap-popover'));
+                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/\/\/activate:bootstrap-popover\/\//i, grunt.file.read('src/embed/activate/bootstrap-popover'));
                         }
 
                         // Replaces <!--embed:xyz--><!--/embed--> tags with the `src/embed/xyz` code
