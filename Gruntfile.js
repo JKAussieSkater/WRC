@@ -391,7 +391,7 @@ module.exports = function (grunt) {
                     event: ['added', 'changed']
                 },
                 files: ['src/scss/**/*.scss', 'src/scss/**/*.sass'],
-                tasks: ['sass', 'postcss', 'clean:sass_scss', 'cssmin:scss', 'clean:postcss_scss', 'concat']
+                tasks: ['sass', 'postcss:scss', 'clean:sass_scss', 'cssmin:scss', 'clean:postcss_scss', 'concat']
             },
             js: {
                 options: {
