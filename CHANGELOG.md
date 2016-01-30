@@ -6,7 +6,7 @@
 * __Bugs:__ [GitHub](https://github.com/JKAussieSkater/WRC/issues)
 
 ## Future Ideas
-* Fix multiple source map problem on distributed files
+* ~~Fix multiple source map problem on distributed files~~ (Fixed?)
 
 ### Longterm Ideas
 * Release project as a starting template, so that many beginners can have a great beginning.
