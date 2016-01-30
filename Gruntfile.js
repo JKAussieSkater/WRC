@@ -1,4 +1,5 @@
-var module, require;
+// JSLint Configuration (to suppress unnecessary warnings)
+/*jslint node: true, regexp: false, white: false, plusplus: false */
 
 module.exports = function (grunt) {
     'use strict';
@@ -27,6 +28,7 @@ module.exports = function (grunt) {
                     filter: function (dest) {
                         var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '');
 
+                        /*jslint white: true */
                         if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
                         else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
                         else { return true; }
@@ -47,6 +49,7 @@ module.exports = function (grunt) {
                     filter: function (dest) {
                         var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^stylesheets\//, 'scss/').replace(/^scss\/_/, 'scss/').replace(/^javascripts\//, 'js/');
 
+                        /*jslint white: true */
                         if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
                         else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
                         else { return true; }
@@ -70,23 +73,27 @@ module.exports = function (grunt) {
                     ],
                     dest: 'src/',
                     filter: function (dest) {
-                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond.src.js/, 'js/polyfill/respond.js');
+                        /*jslint regexp: true */
+                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond\.src\.js/, 'js/polyfill/respond.js');
+                        /*jslint regexp: false */
 
+                        /*jslint white: true */
                         if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
                         else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
                         else { return true; }
                     },
                     rename: function (dest, src) {
-                        return dest + src.replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond.src.js/, 'js/polyfill/respond.js');
+                        /*jslint regexp: true */
+                        return dest + src.replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond\.src\.js/, 'js/polyfill/respond.js');
                     }
                 }]
             },
             process__fontawesome: {
                 options: {
                     process: function (content, path) {
-                        if (~path.indexOf('font-awesome.scss')) {
+                        if (path.test(/font-awesome\.scss/i)) {
                             return content.replace(/@import "/g, '@import "font-awesome/');
-                        } else if (~path.indexOf('_variables.scss')) {
+                        } else if (path.test(/_variables\.scss/i)) {
                             return content.replace(/"\.\.\/fonts"/, '"../fonts/font-awesome"');
                         }
                     }
@@ -102,6 +109,7 @@ module.exports = function (grunt) {
                     filter: function (dest) {
                         var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^_/, 'font-awesome/_');
 
+                        /*jslint white: true */
                         if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
                         else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
                         else { return true; }
@@ -114,22 +122,26 @@ module.exports = function (grunt) {
             process__html: {
                 options: {
                     process: function (content, path) {
-                        var strDepth = '../';
-                        for (var i = path.match(/\//g).length - 2; i; i--) {
+                        var i, strDepth = '../';
+
+                        /*jslint plusplus: true */
+                        for (i = path.match(/\//g).length - 2; i; i--) {
                             strDepth = strDepth + '../';
                         }
+                        /*jslint plusplus: false */
 
-                        if (~content.indexOf('data-toggle="tooltip"')) {
-                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/\/\/activate:bootstrap-tooltip\/\//i, grunt.file.read('src/embed/activate/bootstrap-tooltip'));
+                        if (content.test(/data-toggle=['"]popover['"]/i)) {
+                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/\/\/activate:bootstrap-popover\/\//i, grunt.file.read('src/embed/activate/bootstrap-popover'));
                         }
 
-                        if (~content.indexOf('data-toggle="popover"')) {
-                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/\/\/activate:bootstrap-popover\/\//i, grunt.file.read('src/embed/activate/bootstrap-popover'));
+                        if (content.test(/data-toggle=['"]tooltip['"]/i)) {
+                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/\/\/activate:bootstrap-tooltip\/\//i, grunt.file.read('src/embed/activate/bootstrap-tooltip'));
                         }
 
                         // Replaces <!--embed:xyz--><!--/embed--> tags with the `src/embed/xyz` code
                         // Then converts all references to `/tmp/` into relative paths
-                        return content.replace(/<!--embed:((?:(?!\/?-->).)+)(?:\/-->|-->(?:(?!<!--\/embed-->).|\n)*<!--\/embed-->)/g, function (match, $1) {return grunt.file.read('src/embed/' + $1)}).replace(/\/tmp\//g, strDepth);
+                        /*jslint regexp: true */
+                        return content.replace(/<!--embed:((?:(?!\/?-->).)+)(?:\/-->|-->(?:(?!<!--\/embed-->).|\n)*<!--\/embed-->)/g, function (match, $1) {return grunt.file.read('src/embed/' + $1); }).replace(/\/tmp\//g, strDepth);
                     }
                 },
                 files: [{
@@ -364,33 +376,33 @@ module.exports = function (grunt) {
             },
             css: {
                 options: {
-                    event: ['added', 'changed'],
+                    event: ['added', 'changed']
                 },
                 files: ['src/css/**'],
                 tasks: ['postcss:css', 'cssmin:css', 'clean:postcss_css']
             },
             scss: {
                 options: {
-                    event: ['added', 'changed'],
+                    event: ['added', 'changed']
                 },
                 files: ['src/scss/**/*.scss', 'src/scss/**/*.sass'],
                 tasks: ['sass', 'postcss', 'clean:sass_scss', 'cssmin:scss', 'clean:postcss_scss', 'concat']
             },
             js: {
                 options: {
-                    event: ['added', 'changed'],
+                    event: ['added', 'changed']
                 },
                 files: ['src/js/**'],
                 tasks: ['uglify']
             },
             html: {
                 options: {
-                    event: ['added', 'changed'],
+                    event: ['added', 'changed']
                 },
                 files: ['src/html/**', 'src/embed/**'],
                 tasks: ['copy:process__html', 'minifyHtml', 'clean:copy_process__html']
             }
-        },
+        }
 
     });
 
@@ -441,6 +453,6 @@ module.exports = function (grunt) {
         'minifyHtml', 'clean:copy_process__html'
     ]);
 
-    grunt.registerTask('end-watch', function() { process.exit(1); });
+    grunt.registerTask('end-watch', function () { process.exit(1); });
 
 };
