@@ -154,8 +154,8 @@ module.exports = function (grunt) {
                         'html/**/*.html', '!html/**/*.processed.html',
                         'images/**',
                         'js/**/*.min.js',
-                        '../../LICENSE',
-                        '../../README.md'
+                        '../LICENSE',
+                        '../README.md'
                     ],
                     dest: 'dist/',
                     filter: 'isFile',
