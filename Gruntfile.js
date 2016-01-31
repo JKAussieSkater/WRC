@@ -130,6 +130,12 @@ module.exports = function (grunt) {
                         }
                         /*jslint plusplus: false */
 
+                        // Super-dooper code to parse <style></style> attribute if it's within the <head></head> attribute,
+                        // and strips any commented code, newlines & tab spaces. Basically my simple RegEx CSS Minifier.
+                        /*jslint regexp: true */
+                        content = content.replace(/(<head>)((?:(?!<(?:style|\/head)>)(?:.|\n))*)(?:(<\/head>)|(<style>)((?:(?!<(?:\/style|\/head)>)(?:.|\n))*)(?:(<\/head>)|(<\/style>)((?:(?!<\/head>)(?:.|\n))*)(<\/head>)))/i, '$1$2$3$4' + content.match(/<head>(?:(?!<(?:style|\/head)>)(?:.|\n))*(?:<\/head>|<style>(?:(?!<(?:\/style|\/head)>)(?:.|\n))*(?:<\/head>|<\/style>(?:(?!<\/head>)(?:.|\n))*<\/head>))/i)[0].replace(/<head>(?:(?!<(?:style|\/head)>)(?:.|\n))*(?:<\/head>|<style>((?:(?!<(?:\/style|\/head)>)(?:.|\n))*)(?:<\/head>|<\/style>(?:(?!<\/head>)(?:.|\n))*<\/head>))/i, '$1').replace(/\n\s+/g, '').replace(/\/\*(?:(?!\*\/)(?:.|\n))*\*\//g, '') + '$6$7$8$9');
+                        /*jslint regexp: false */
+
                         // Replaces <!--embed:xyz--><!--/embed--> tags with the `src/embed/xyz` code
                         // Then converts all references to `/tmp/` into relative paths
                         /*jslint regexp: true */
@@ -155,6 +161,21 @@ module.exports = function (grunt) {
                     src: ['**'],
                     dest: 'tmp/html/',
                     ext: '.processed.html',
+                    filter: 'isFile'
+                }]
+            },
+            process__tmp_html: {
+                options: {
+                    process: function (content) {
+                        /*jslint regexp: true */
+                        return content.replace(/<style>\/\*((?:(?!\*\/<\/style>)(?:.|\n))*)\*\/<\/style>/gi, '<!--$1-->');
+                    }
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'tmp/html/',
+                    src: ['**'],
+                    dest: 'tmp/html/',
                     filter: 'isFile'
                 }]
             },
@@ -362,10 +383,10 @@ module.exports = function (grunt) {
                 'tmp/css/**/*.postcss.scss.css.map'
             ],
             copy_process__html: ['tmp/html/**/*.processed.html'],
-            processed: ['tmp/*'],
-            processed_css: ['tmp/css/*'],
-            processed_js: ['tmp/js/*'],
-            processed_html: ['tmp/html/*']
+            tmp: ['tmp/*'],
+            tmp_css: ['tmp/css/*'],
+            tmp_js: ['tmp/js/*'],
+            tmp_html: ['tmp/html/*']
         },
 
         // Watches `src` files for changes, and performs appropriate tasks on-the-fly
@@ -405,7 +426,7 @@ module.exports = function (grunt) {
                     event: ['added', 'changed']
                 },
                 files: ['src/html/**', 'src/embed/**'],
-                tasks: ['copy:process__html', 'minifyHtml', 'clean:copy_process__html']
+                tasks: ['copy:process__html', 'minifyHtml', 'clean:copy_process__html', 'copy:process__tmp_html']
             }
         }
 
@@ -434,7 +455,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('Compilation-Tasks', [
-        'clean:processed',
+        'clean:tmp',
         'Import-Missing-Assets',
         'Process-Files',
         'Minify-Processed'
@@ -455,7 +476,7 @@ module.exports = function (grunt) {
         'cssmin', 'clean:postcss_css', 'clean:postcss_scss',
         'uglify',
         'concat',
-        'minifyHtml', 'clean:copy_process__html'
+        'minifyHtml', 'clean:copy_process__html', 'copy:process__tmp_html'
     ]);
 
     grunt.registerTask('end-watch', function () { process.exit(1); });
