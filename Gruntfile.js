@@ -1,20 +1,11 @@
 // JSLint Configuration (to suppress unnecessary warnings)
-/*jslint node: true, regexp: false, white: false, plusplus: false */
+/*jslint node: true */
 
 module.exports = function (grunt) {
     'use strict';
 
     // Configuration goes here
     grunt.initConfig({
-
-        // Retrieve project's metadata
-        pkg: grunt.file.readJSON('package.json'),
-
-        mybanner:   '-------------------------------------\n' +
-                    '         <%= pkg.name %>\n' +
-                    'Copyright © <%= pkg.author.name %>  2015-<%= grunt.template.today("yyyy") %>\n' +
-                    '-------------------------------------\n' +
-                    '     Version: <%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>)',
 
         // Copies files from 3rd party sources to the `src` folder (without replacing existing files)
         // Copies files from `src` folder to `dist` folder on production
@@ -391,7 +382,7 @@ module.exports = function (grunt) {
 
         // Watches `src` files for changes, and performs appropriate tasks on-the-fly
         watch: {
-            configFiles: {
+            Gruntfile: {
                 options: {
                     event: ['changed'],
                     spawn: false,
@@ -399,6 +390,13 @@ module.exports = function (grunt) {
                 },
                 files: ['gruntfile.js'],
                 tasks: ['end-watch']
+            },
+            package_json: {
+                options: {
+                    event: ['added', 'changed']
+                },
+                files: ['package.json'],
+                tasks: ['Assemble-Banner']
             },
             css: {
                 options: {
@@ -455,6 +453,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('Compilation-Tasks', [
+        'Assemble-Banner',
         'clean:tmp',
         'Import-Missing-Assets',
         'Process-Files',
@@ -478,6 +477,78 @@ module.exports = function (grunt) {
         'concat',
         'minifyHtml', 'clean:copy_process__html', 'copy:process__tmp_html'
     ]);
+
+    grunt.registerTask('Assemble-Banner', function () {
+        /*jslint regexp: true */
+        var pkg = grunt.file.readJSON('package.json'),
+            strBanner,
+            strName = pkg.description.replace(/\.(?:\n|.)*/, ''),
+            strCopyright = 'Copyright © ' + pkg.author.name + ' ',
+            strLicense = 'License: ',
+            strVersion = 'Version: ' + pkg.version + ' ',
+            blnOddName = strName.length % 2 !== 0, // true if odd, false if even
+            strYears = pkg.meta.initial_version.date.year,
+            strLength,
+            strPrefix,
+            intLongest;
+        /*jslint regexp: false */
+
+        if (pkg.meta.initial_version.date.year !== pkg.meta.current_version.date.year) {
+            strYears = pkg.meta.initial_version.date.year + '-' + pkg.meta.current_version.date.year;
+        }
+
+        if (((strCopyright + strYears).length % 2 !== 0) === blnOddName) {
+            strCopyright = strCopyright + strYears;
+        } else {
+            strCopyright = strCopyright + ' ' + strYears;
+        }
+
+        if (((strLicense + pkg.license).length % 2 !== 0) === blnOddName) {
+            strLicense = strLicense + pkg.license;
+        } else {
+            strLicense = strLicense + ' ' + pkg.license;
+        }
+
+        if (((strVersion + '(' + pkg.meta.current_version.date.full + ')').length % 2 !== 0) === blnOddName) {
+            strVersion = strVersion + '(' + pkg.meta.current_version.date.full + ')';
+        } else {
+            strVersion = strVersion + ' ' + '(' + pkg.meta.current_version.date.full + ')';
+        }
+
+        intLongest = Math.max(strName.length, strCopyright.length, strLicense.length, strVersion.length);
+
+        for (strLength = ''; strLength.length !== intLongest; 0) {
+            strLength = strLength + '-';
+        }
+
+        for (strPrefix = intLongest / 2 + strName.length / 2; strName.length !== strPrefix; 0) {
+            strName = ' ' + strName;
+        }
+        for (strPrefix = intLongest / 2 + strCopyright.length / 2; strCopyright.length !== strPrefix; 0) {
+            strCopyright = ' ' + strCopyright;
+        }
+        for (strPrefix = intLongest / 2 + strLicense.length / 2; strLicense.length !== strPrefix; 0) {
+            strLicense = ' ' + strLicense;
+        }
+        for (strPrefix = intLongest / 2 + strVersion.length / 2; strVersion.length !== strPrefix; 0) {
+            strVersion = ' ' + strVersion;
+        }
+
+        /*jslint white: true */
+        strBanner = strLength + '\n' +
+                    strName + '\n' +
+                    strCopyright + '\n' +
+                    strLicense + '\n' +
+                    strLength + '\n' +
+                    strVersion;
+        /*jslint white: false */
+
+        // Display banner in console
+        console.log('<pre><tt>' + strBanner + '</tt></pre>');
+
+        // Write banner to some place
+        grunt.file.write('src/embed/banner.html', '<style>/*\n' + strBanner + '\n*/</style>');
+    });
 
     grunt.registerTask('end-watch', function () { process.exit(1); });
 
