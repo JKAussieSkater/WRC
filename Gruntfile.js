@@ -137,11 +137,11 @@ module.exports = function (grunt) {
                         /*jslint regexp: false */
 
                         if (/data-toggle=('|")popover\1/i.test(content)) {
-                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/\/\/activate:bootstrap-popover\/\//i, grunt.file.read('src/embed/activate/bootstrap-popover'));
+                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template.html')).replace(/\/\/activate:bootstrap-popover\.js\/\//i, grunt.file.read('src/embed/activate/bootstrap-popover.js'));
                         }
 
                         if (/data-toggle=('|")tooltip\1/i.test(content)) {
-                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template')).replace(/\/\/activate:bootstrap-tooltip\/\//i, grunt.file.read('src/embed/activate/bootstrap-tooltip'));
+                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template.html')).replace(/\/\/activate:bootstrap-tooltip\.js\/\//i, grunt.file.read('src/embed/activate/bootstrap-tooltip.js'));
                         }
 
                         // Discards any code requests for unused features
