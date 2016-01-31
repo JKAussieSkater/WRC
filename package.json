@@ -1,7 +1,22 @@
 {
   "name": "WRC",
   "version": "0.2.0",
-  "description": "WRC Website",
+  "meta": {
+    "current_version": {
+      "date":  {
+        "full": "2016-01-31",
+        "year": "2016",
+        "month": "01",
+        "day": "31"
+      }
+    },
+    "initial_version": {
+      "date":  {
+        "year": "2015"
+      }
+    }
+  },
+  "description": "WRC Website. Standard website, not-so-standard production ;)",
   "keywords": [
     "node",
     "npm"
