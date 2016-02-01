@@ -1,5 +1,6 @@
 {
   "name": "WRC",
+  "description": "WRC Website. Standard website, not-so-standard production ;)",
   "version": "0.2.0",
   "meta": {
     "current_version": {
@@ -16,20 +17,23 @@
       }
     }
   },
-  "description": "WRC Website. Standard website, not-so-standard production ;)",
   "keywords": [
-    "node",
-    "npm"
+    "mechanic",
+    "repairs",
+    "werribee",
+    "roadworthy"
   ],
   "homepage": "https://github.com/JKAussieSkater/WRC",
-  "repository": "https://github.com/JKAussieSkater/WRC",
-  "bugs": "https://github.com/JKAussieSkater/WRC/issues",
-  "license": "MIT",
   "author": {
     "name": "JKAussieSkater",
-    "email": "",
     "url": "https://github.com/JKAussieSkater"
   },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JKAussieSkater/WRC.git"
+  },
+  "bugs": "https://github.com/JKAussieSkater/WRC/issues",
   "devDependencies": {
     "autoprefixer": "^6.3.1",
     "grunt": "^0.4.5",
