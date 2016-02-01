@@ -10,22 +10,6 @@ module.exports = function (grunt) {
         // Copies files from 3rd party sources to the `src` folder (without replacing existing files)
         // Copies files from `src` folder to `dist` folder on production
         copy: {
-            components: {
-                files: [{
-                    expand: true,
-                    cwd: 'components/bootswatch/',
-                    src: ['superhero/**'],
-                    dest: 'src/scss/',
-                    filter: function (dest) {
-                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '');
-
-                        /*jslint white: true */
-                        if (!grunt.file.isFile(dest)) { console.log('Not a file: ' + dest); return false; }
-                        else if (grunt.file.exists(output)) { console.log('Already exists: ' + output); return false; }
-                        else { return true; }
-                    }
-                }]
-            },
             bootstrap_assets: {
                 files: [{
                     expand: true,
@@ -60,12 +44,13 @@ module.exports = function (grunt) {
                         'font-awesome/fonts/**',
                         'jquery/dist/jquery.js',
                         'html5shiv/dist/html5shiv.js',
-                        'respond/dest/respond.src.js'
+                        'respond/dest/respond.src.js',
+                        'bootswatch/superhero/**/*.scss'
                     ],
                     dest: 'src/',
                     filter: function (dest) {
                         /*jslint regexp: true */
-                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond\.src\.js/, 'js/polyfill/respond.js');
+                        var output = grunt.task.current.data.files[0].dest + dest.replace(new RegExp('^' + this.cwd), '').replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond\.src\.js/, 'js/polyfill/respond.js').replace(/^bootswatch\//, 'scss/bootswatch/');
                         /*jslint regexp: false */
 
                         /*jslint white: true */
@@ -75,7 +60,7 @@ module.exports = function (grunt) {
                     },
                     rename: function (dest, src) {
                         /*jslint regexp: true */
-                        return dest + src.replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond\.src\.js/, 'js/polyfill/respond.js');
+                        return dest + src.replace(/^font-awesome\/(.*)\//, '$1/font-awesome/').replace(/^jquery\/dist\//, 'js/').replace(/^html5shiv\/dist\//, 'js/polyfill/').replace(/^respond\/dest\/respond\.src\.js/, 'js/polyfill/respond.js').replace(/^bootswatch\//, 'scss/bootswatch/');
                     }
                 }]
             },
@@ -462,8 +447,7 @@ module.exports = function (grunt) {
     grunt.registerTask('Import-Missing-Assets', [
         'copy:process__fontawesome',
         'copy:bower_components',
-        'copy:bootstrap_assets',
-        'copy:components'
+        'copy:bootstrap_assets'
     ]);
     grunt.registerTask('Process-Files', [
         'sass',
