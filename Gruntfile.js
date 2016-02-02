@@ -443,6 +443,14 @@ module.exports = function (grunt) {
                     ]
                 }]
             },
+            css_custom: {
+                files: [{
+                    'tmp/css/master_custom.min.css': [
+                        'tmp/css/custom.min.css',
+                        'tmp/css/font-awesome.min.css'
+                    ]
+                }]
+            },
             js: {
                 files: [{
                     'tmp/js/master.min.js': [
