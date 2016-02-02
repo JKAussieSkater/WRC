@@ -4,6 +4,126 @@
 module.exports = function (grunt) {
     'use strict';
 
+    // Register Grunt tasks
+    grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
+
+    grunt.registerTask('Distribute', ['copy:dist']);
+    grunt.registerTask('Clean-Distribute', [
+        'clean:dist',
+        'Distribute'
+    ]);
+
+    grunt.registerTask('Compilation-Tasks', [
+        'Assemble-Banner',
+        'clean:tmp',
+        'Import-Missing-Assets',
+        'Process-Files',
+        'Minify-Processed'
+    ]);
+    grunt.registerTask('Import-Missing-Assets', [
+        'copy:process__fontawesome',
+        'copy:bower_components',
+        'copy:bootstrap_assets'
+    ]);
+    grunt.registerTask('Process-Files', [
+        'sass',
+        'postcss', 'clean:sass_scss',
+        'copy:process__html',
+        'copy:gather_nontext'
+    ]);
+    grunt.registerTask('Minify-Processed', [
+        'cssmin', 'clean:postcss_css', 'clean:postcss_scss',
+        'uglify',
+        'concat',
+        'minifyHtml', 'clean:copy_process__html', 'copy:process__tmp_html'
+    ]);
+
+    grunt.registerTask('Assemble-Banner', function () {
+        /*jslint regexp: true */
+        var pkg = grunt.file.readJSON('package.json'),
+            strBanner,
+            strName = pkg.description.replace(/\.(?:\n|.)*/, ''),
+            strCopyright = 'Copyright © ' + pkg.author.name + ' ',
+            strLicense = 'License: ',
+            strVersion = 'Version: ' + pkg.version + ' ',
+            blnOddName = strName.length % 2 !== 0, // true if odd, false if even
+            strYears = pkg.meta.initial_version.date.year,
+            strLength,
+            strPrefix,
+            intLongest;
+        /*jslint regexp: false */
+
+        if (pkg.meta.initial_version.date.year !== pkg.meta.current_version.date.year) {
+            strYears = pkg.meta.initial_version.date.year + '-' + pkg.meta.current_version.date.year;
+        }
+
+        if (((strCopyright + strYears).length % 2 !== 0) === blnOddName) {
+            strCopyright = strCopyright + strYears;
+        } else {
+            strCopyright = strCopyright + ' ' + strYears;
+        }
+
+        if (((strLicense + pkg.license).length % 2 !== 0) === blnOddName) {
+            strLicense = strLicense + pkg.license;
+        } else {
+            strLicense = strLicense + ' ' + pkg.license;
+        }
+
+        if (((strVersion + '(' + pkg.meta.current_version.date.full + ')').length % 2 !== 0) === blnOddName) {
+            strVersion = strVersion + '(' + pkg.meta.current_version.date.full + ')';
+        } else {
+            strVersion = strVersion + ' ' + '(' + pkg.meta.current_version.date.full + ')';
+        }
+
+        intLongest = Math.max(strName.length, strCopyright.length, strLicense.length, strVersion.length);
+
+        for (strLength = ''; strLength.length !== intLongest; 0) {
+            strLength = strLength + '-';
+        }
+
+        for (strPrefix = intLongest / 2 + strName.length / 2; strName.length !== strPrefix; 0) {
+            strName = ' ' + strName;
+        }
+        for (strPrefix = intLongest / 2 + strCopyright.length / 2; strCopyright.length !== strPrefix; 0) {
+            strCopyright = ' ' + strCopyright;
+        }
+        for (strPrefix = intLongest / 2 + strLicense.length / 2; strLicense.length !== strPrefix; 0) {
+            strLicense = ' ' + strLicense;
+        }
+        for (strPrefix = intLongest / 2 + strVersion.length / 2; strVersion.length !== strPrefix; 0) {
+            strVersion = ' ' + strVersion;
+        }
+
+        /*jslint white: true */
+        strBanner = strLength + '\n' +
+                    strName + '\n' +
+                    strCopyright + '\n' +
+                    strLicense + '\n' +
+                    strLength + '\n' +
+                    strVersion;
+        /*jslint white: false */
+
+        // Display banner in console
+        console.log('<pre><tt>' + strBanner + '</tt></pre>');
+
+        // Write banner to some place
+        grunt.file.write('src/embed/banner.html', '<style>/*\n' + strBanner + '\n*/</style>');
+    });
+
+    grunt.registerTask('end-watch', function () { process.exit(1); });
+
+    // Load Grunt plugins
+    require('time-grunt')(grunt);
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-minify-html');
+    grunt.loadNpmTasks('grunt-postcss');
+    grunt.loadNpmTasks('grunt-sass');
+
     // Configuration goes here
     grunt.initConfig({
 
@@ -414,126 +534,4 @@ module.exports = function (grunt) {
         }
 
     });
-
-    // Load Grunt plugins
-    require('time-grunt')(grunt);
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-cssmin');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-minify-html');
-    grunt.loadNpmTasks('grunt-postcss');
-    grunt.loadNpmTasks('grunt-sass');
-
-
-    // Register Grunt tasks
-    grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
-
-    grunt.registerTask('Distribute', ['copy:dist']);
-    grunt.registerTask('Clean-Distribute', [
-        'clean:dist',
-        'copy:dist'
-    ]);
-
-    grunt.registerTask('Compilation-Tasks', [
-        'Assemble-Banner',
-        'clean:tmp',
-        'Import-Missing-Assets',
-        'Process-Files',
-        'Minify-Processed'
-    ]);
-    grunt.registerTask('Import-Missing-Assets', [
-        'copy:process__fontawesome',
-        'copy:bower_components',
-        'copy:bootstrap_assets'
-    ]);
-    grunt.registerTask('Process-Files', [
-        'sass',
-        'postcss', 'clean:sass_scss',
-        'copy:process__html',
-        'copy:gather_nontext'
-    ]);
-    grunt.registerTask('Minify-Processed', [
-        'cssmin', 'clean:postcss_css', 'clean:postcss_scss',
-        'uglify',
-        'concat',
-        'minifyHtml', 'clean:copy_process__html', 'copy:process__tmp_html'
-    ]);
-
-    grunt.registerTask('Assemble-Banner', function () {
-        /*jslint regexp: true */
-        var pkg = grunt.file.readJSON('package.json'),
-            strBanner,
-            strName = pkg.description.replace(/\.(?:\n|.)*/, ''),
-            strCopyright = 'Copyright © ' + pkg.author.name + ' ',
-            strLicense = 'License: ',
-            strVersion = 'Version: ' + pkg.version + ' ',
-            blnOddName = strName.length % 2 !== 0, // true if odd, false if even
-            strYears = pkg.meta.initial_version.date.year,
-            strLength,
-            strPrefix,
-            intLongest;
-        /*jslint regexp: false */
-
-        if (pkg.meta.initial_version.date.year !== pkg.meta.current_version.date.year) {
-            strYears = pkg.meta.initial_version.date.year + '-' + pkg.meta.current_version.date.year;
-        }
-
-        if (((strCopyright + strYears).length % 2 !== 0) === blnOddName) {
-            strCopyright = strCopyright + strYears;
-        } else {
-            strCopyright = strCopyright + ' ' + strYears;
-        }
-
-        if (((strLicense + pkg.license).length % 2 !== 0) === blnOddName) {
-            strLicense = strLicense + pkg.license;
-        } else {
-            strLicense = strLicense + ' ' + pkg.license;
-        }
-
-        if (((strVersion + '(' + pkg.meta.current_version.date.full + ')').length % 2 !== 0) === blnOddName) {
-            strVersion = strVersion + '(' + pkg.meta.current_version.date.full + ')';
-        } else {
-            strVersion = strVersion + ' ' + '(' + pkg.meta.current_version.date.full + ')';
-        }
-
-        intLongest = Math.max(strName.length, strCopyright.length, strLicense.length, strVersion.length);
-
-        for (strLength = ''; strLength.length !== intLongest; 0) {
-            strLength = strLength + '-';
-        }
-
-        for (strPrefix = intLongest / 2 + strName.length / 2; strName.length !== strPrefix; 0) {
-            strName = ' ' + strName;
-        }
-        for (strPrefix = intLongest / 2 + strCopyright.length / 2; strCopyright.length !== strPrefix; 0) {
-            strCopyright = ' ' + strCopyright;
-        }
-        for (strPrefix = intLongest / 2 + strLicense.length / 2; strLicense.length !== strPrefix; 0) {
-            strLicense = ' ' + strLicense;
-        }
-        for (strPrefix = intLongest / 2 + strVersion.length / 2; strVersion.length !== strPrefix; 0) {
-            strVersion = ' ' + strVersion;
-        }
-
-        /*jslint white: true */
-        strBanner = strLength + '\n' +
-                    strName + '\n' +
-                    strCopyright + '\n' +
-                    strLicense + '\n' +
-                    strLength + '\n' +
-                    strVersion;
-        /*jslint white: false */
-
-        // Display banner in console
-        console.log('<pre><tt>' + strBanner + '</tt></pre>');
-
-        // Write banner to some place
-        grunt.file.write('src/embed/banner.html', '<style>/*\n' + strBanner + '\n*/</style>');
-    });
-
-    grunt.registerTask('end-watch', function () { process.exit(1); });
-
 };
