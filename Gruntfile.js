@@ -37,6 +37,7 @@ module.exports = function (grunt) {
         'concat',
         'minifyHtml', 'clean:copy_process__html', 'copy:process__tmp_html'
     ]);
+    grunt.registerTask('HTTP-SERVER', ['http-server', 'watch:Gruntfile']);
 
     grunt.registerTask('Assemble-Banner', function () {
         /*jslint regexp: true */
@@ -107,7 +108,7 @@ module.exports = function (grunt) {
         console.log('<pre><tt>' + strBanner + '</tt></pre>');
 
         // Write banner to some place
-        grunt.file.write('src/embed/banner.html', '<style>/*\n' + strBanner + '\n*/</style>');
+        grunt.file.write('src/_include/banner.html', '<style>/*\n' + strBanner + '\n*/</style>');
     });
 
     grunt.registerTask('end-watch', function () { process.exit(1); });
@@ -120,6 +121,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-http-server');
     grunt.loadNpmTasks('grunt-minify-html');
     grunt.loadNpmTasks('grunt-postcss');
     grunt.loadNpmTasks('grunt-sass');
@@ -232,18 +234,18 @@ module.exports = function (grunt) {
                         content = content.replace(/(<head>)((?:(?!<(?:style|\/head)>)(?:.|\n))*)(?:(<\/head>)|(<style>)((?:(?!<(?:\/style|\/head)>)(?:.|\n))*)(?:(<\/head>)|(<\/style>)((?:(?!<\/head>)(?:.|\n))*)(<\/head>)))/i, '$1$2$3$4' + content.match(/<head>(?:(?!<(?:style|\/head)>)(?:.|\n))*(?:<\/head>|<style>(?:(?!<(?:\/style|\/head)>)(?:.|\n))*(?:<\/head>|<\/style>(?:(?!<\/head>)(?:.|\n))*<\/head>))/i)[0].replace(/<head>(?:(?!<(?:style|\/head)>)(?:.|\n))*(?:<\/head>|<style>((?:(?!<(?:\/style|\/head)>)(?:.|\n))*)(?:<\/head>|<\/style>(?:(?!<\/head>)(?:.|\n))*<\/head>))/i, '$1').replace(/\n\s+/g, '').replace(/\/\*(?:(?!\*\/)(?:.|\n))*\*\//g, '') + '$6$7$8$9');
                         /*jslint regexp: false */
 
-                        // Replaces <!--embed:xyz--><!--/embed--> tags with the `src/embed/xyz` code
+                        // Replaces <!--include:xyz--><!--/include--> tags with the `src/_include/xyz` code
                         // Then converts all references to `/tmp/` into relative paths
                         /*jslint regexp: true */
-                        content = content.replace(/<!--embed:((?:(?!\/?-->).)+)(?:\/-->|-->(?:(?!<!--\/embed-->).|\n)*<!--\/embed-->)/g, function (match, $1) {return grunt.file.read('src/embed/' + $1); }).replace(/\/tmp\//g, strDepth);
+                        content = content.replace(/<!--include:((?:(?!\/?-->).)+)(?:\/-->|-->(?:(?!<!--\/include-->).|\n)*<!--\/include-->)/g, function (match, $1) {return grunt.file.read('src/_include/' + $1); }).replace(/\/tmp\//g, strDepth);
                         /*jslint regexp: false */
 
                         if (/data-toggle=('|")popover\1/i.test(content)) {
-                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template.html')).replace(/\/\/activate:bootstrap-popover\.js\/\//i, grunt.file.read('src/embed/activate/bootstrap-popover.js'));
+                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/_include/activate/template.html')).replace(/\/\/activate:bootstrap-popover\.js\/\//i, grunt.file.read('src/_include/activate/bootstrap-popover.js'));
                         }
 
                         if (/data-toggle=('|")tooltip\1/i.test(content)) {
-                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/embed/activate/template.html')).replace(/\/\/activate:bootstrap-tooltip\.js\/\//i, grunt.file.read('src/embed/activate/bootstrap-tooltip.js'));
+                            content = content.replace(/<!--activate\/-->/i, grunt.file.read('src/_include/activate/template.html')).replace(/\/\/activate:bootstrap-tooltip\.js\/\//i, grunt.file.read('src/_include/activate/bootstrap-tooltip.js'));
                         }
 
                         // Discards any code requests for unused features
@@ -493,6 +495,20 @@ module.exports = function (grunt) {
             tmp_html: ['tmp/html/*']
         },
 
+        'http-server': {
+            project: {
+                root: '/Users/james/Documents/JayKay Webbies/WRC/',
+                host: '0.0.0.0',
+                port: 8282,
+                ext: 'html',
+                cache: 3600,
+                showDir : true,
+                autoIndex: true,
+                runInBackground: true,
+                openBrowser : true
+            }
+        },
+
         // Watches `src` files for changes, and performs appropriate tasks on-the-fly
         watch: {
             Gruntfile: {
@@ -536,7 +552,7 @@ module.exports = function (grunt) {
                 options: {
                     event: ['added', 'changed']
                 },
-                files: ['src/html/**', 'src/embed/**'],
+                files: ['src/html/**', 'src/_include/**'],
                 tasks: ['copy:process__html', 'minifyHtml', 'clean:copy_process__html', 'copy:process__tmp_html']
             }
         }

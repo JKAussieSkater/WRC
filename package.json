@@ -4,7 +4,7 @@
   "version": "0.2.0",
   "meta": {
     "current_version": {
-      "date":  {
+      "date": {
         "full": "2016-01-31",
         "year": "2016",
         "month": "01",
@@ -12,7 +12,7 @@
       }
     },
     "initial_version": {
-      "date":  {
+      "date": {
         "year": "2015"
       }
     }
@@ -43,6 +43,7 @@
     "grunt-contrib-cssmin": "^0.14.0",
     "grunt-contrib-uglify": "^0.11.0",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-http-server": "^1.13.0",
     "grunt-minify-html": "^2.0.0",
     "grunt-postcss": "^0.7.1",
     "grunt-sass": "^1.1.0",
