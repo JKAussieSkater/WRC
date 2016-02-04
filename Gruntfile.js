@@ -108,7 +108,7 @@ module.exports = function (grunt) {
         console.log('<pre><tt>' + strBanner + '</tt></pre>');
 
         // Write banner to some place
-        grunt.file.write('src/_include/banner.html', '<style>/*\n' + strBanner + '\n*/</style>');
+        grunt.file.write('src/_include/html/banner.html', '<style>/*\n' + strBanner + '\n*/</style>');
     });
 
     grunt.registerTask('end-watch', function () { process.exit(1); });
@@ -237,7 +237,7 @@ module.exports = function (grunt) {
                         // Replaces <!--include:xyz--><!--/include--> tags with the `src/_include/xyz` code
                         // Then converts all references to `/tmp/` into relative paths
                         /*jslint regexp: true */
-                        content = content.replace(/<!--include:((?:(?!\/?-->).)+)(?:\/-->|-->(?:(?!<!--\/include-->).|\n)*<!--\/include-->)/g, function (match, $1) {return grunt.file.read('src/_include/' + $1); }).replace(/\/tmp\//g, strDepth);
+                        content = content.replace(/<!--include:(((?:(?!\/).)+)(?:(?!\/?-->).)+)(?:\/-->|-->(?:(?!<!--\/include-->).|\n)*<!--\/include-->)/g, function (match, $1, $2) {return grunt.file.read('src/_include/' + $1 + '.' + $2); }).replace(/\/tmp\//g, strDepth);
                         /*jslint regexp: false */
 
                         if (/data-toggle=('|")popover\1/i.test(content)) {
