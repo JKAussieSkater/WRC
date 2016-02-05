@@ -4,6 +4,8 @@
 module.exports = function (grunt) {
     'use strict';
 
+    var path = require('path');
+
     // Register Grunt tasks
     grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
 
@@ -497,7 +499,7 @@ module.exports = function (grunt) {
 
         'http-server': {
             project: {
-                root: '/Users/james/Documents/JayKay Webbies/WRC/',
+                root: path.resolve() + '/',
                 host: '0.0.0.0',
                 port: 8282,
                 ext: 'html',
