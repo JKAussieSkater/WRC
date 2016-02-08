@@ -507,7 +507,10 @@ module.exports = function (grunt) {
                 showDir : true,
                 autoIndex: true,
                 runInBackground: true,
-                openBrowser : true
+                openBrowser: true,
+                customPages: {
+                    '/': '/src/html/home.html'
+                }
             }
         },
 
