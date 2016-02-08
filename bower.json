@@ -23,12 +23,12 @@
     "README.md"
   ],
   "devDependencies": {
-    "bootstrap-dv": "^1.1.3",
-    "bootstrap-sass": "^3.3.6",
-    "font-awesome": "fontawesome#^4.5.0",
-    "respond": "^1.4.2",
-    "html5shiv": "^3.7.3",
-    "bootswatch": "^3.3.6+1"
+    "bootstrap-dv": "~1",
+    "bootstrap-sass": "~3",
+    "font-awesome": "fontawesome#~4",
+    "respond": "~1",
+    "html5shiv": "~3",
+    "bootswatch": "~3"
   },
   "ignore": [
     "/bower_components/",
