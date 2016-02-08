@@ -511,6 +511,20 @@ module.exports = function (grunt) {
                 customPages: {
                     '/': '/src/html/home.html'
                 }
+            },
+            distribution: {
+                root: path.resolve() + '/dist',
+                host: '0.0.0.0',
+                port: 8283,
+                ext: 'html',
+                cache: 3600,
+                showDir : true,
+                autoIndex: true,
+                runInBackground: true,
+                openBrowser: true,
+                customPages: {
+                    '/': '/html/home.html'
+                }
             }
         },
 
