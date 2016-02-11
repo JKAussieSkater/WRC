@@ -7,41 +7,41 @@ module.exports = function (grunt) {
     var path = require('path');
 
     // Register Grunt tasks
-    grunt.registerTask('default', ['Compilation-Tasks', 'watch']);
+    grunt.registerTask('default', 'Sets up developing environment, and watches source files for changes.', ['Compilation-Tasks', 'watch']);
 
-    grunt.registerTask('Distribute', ['copy:dist']);
-    grunt.registerTask('Clean-Distribute', [
+    grunt.registerTask('Distribute', 'Assembles `dist/` folder from pre-compiled source files.', ['copy:dist']);
+    grunt.registerTask('Clean-Distribute', 'Deletes `dist/` folder, then assembles it from scratch.', [
         'clean:dist',
         'Distribute'
     ]);
 
-    grunt.registerTask('Compilation-Tasks', [
+    grunt.registerTask('Compilation-Tasks', 'Sets up developing environment for live-preview of files.', [
         'Assemble-Banner',
         'clean:tmp',
         'Import-Missing-Assets',
         'Process-Files',
         'Minify-Processed'
     ]);
-    grunt.registerTask('Import-Missing-Assets', [
+    grunt.registerTask('Import-Missing-Assets', "Copies 3rd party assets, but doesn't replace existing files.", [
         'copy:process__fontawesome',
         'copy:bower_components',
         'copy:bootstrap_assets'
     ]);
-    grunt.registerTask('Process-Files', [
+    grunt.registerTask('Process-Files', 'Compiles and edits source files for pre-distribution.', [
         'sass',
         'postcss', 'clean:sass_scss',
         'copy:process__html',
         'copy:gather_nontext'
     ]);
-    grunt.registerTask('Minify-Processed', [
+    grunt.registerTask('Minify-Processed', 'Compresses files through optomisation and whitespace stripping.', [
         'cssmin', 'clean:postcss_css', 'clean:postcss_scss',
         'uglify',
         'concat',
         'minifyHtml', 'clean:copy_process__html', 'copy:process__tmp_html'
     ]);
-    grunt.registerTask('HTTP-SERVER', ['http-server', 'watch:Gruntfile']);
+    grunt.registerTask('HTTP-SERVER',"Starts HTTP server, with ports accessible publicly via this computer's IP address.", ['http-server', 'watch:Gruntfile']);
 
-    grunt.registerTask('Assemble-Banner', function () {
+    grunt.registerTask('Assemble-Banner', 'Creates my banner from `package.json` data, calculating spacing and borders.', function () {
         /*jslint regexp: true */
         var pkg = grunt.file.readJSON('package.json'),
             strBanner,
@@ -113,7 +113,7 @@ module.exports = function (grunt) {
         grunt.file.write('src/_include/html/banner.html', '<style>/*\n' + strBanner + '\n*/</style>');
     });
 
-    grunt.registerTask('end-watch', function () { process.exit(1); });
+    grunt.registerTask('end-watch', 'If a running process executes this Grunt task, it ends. Designed for `watch`.', function () { process.exit(1); });
 
     // Load Grunt plugins
     require('time-grunt')(grunt);
