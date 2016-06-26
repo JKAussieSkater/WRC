@@ -1,14 +1,14 @@
 {
   "name": "WRC",
   "description": "WRC Website. Standard website, not-so-standard production ;)",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "meta": {
     "current_version": {
       "date": {
-        "full": "2016-01-31",
+        "full": "2016-02-08",
         "year": "2016",
-        "month": "01",
-        "day": "31"
+        "month": "02",
+        "day": "08"
       }
     },
     "initial_version": {

@@ -12,6 +12,11 @@
 * Release project as a starting template, so that many beginners can have a great beginning.
 
 ## Changelog
+#### [2016-02-08] v0.3.0
+* Introduced test server
+  * Allows me to test website on other devices (on the same network), such as iPhones and iPads
+  * Included two ports, one for development testing and one for production testing
+* Changed `embed` folder to be an `_include` folder
 
 #### [2016-01-31] v0.2.0
 * Improved File Tree directory structure
