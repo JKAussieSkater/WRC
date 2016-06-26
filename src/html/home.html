@@ -33,10 +33,10 @@
     <![endif]-->
   <!--/include-->
 
-  <!--include:txt/remove/-->
+  <!--include:txt/remove/--><!--Disabled ATM because of the trailing/-->
   <style>
     body {
-      padding-top: 70px;
+      padding-top: 50px;
       /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
     }
   </style>
@@ -53,7 +53,7 @@
           <span class="icon-bar"></span>
         </button>
         <!-- Site Name/Logo -->
-        <a class="navbar-brand" href="#" style="color: #444;"><strong>Werribee Roadworthy Centre</strong></a>
+        <a class="navbar-brand" href="#"><strong>Werribee Roadworthy Centre</strong></a>
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
@@ -72,6 +72,7 @@
     </div>
   </nav>
 
+  <!--include:txt/remove-->
   <div id="screen-type" class="bg-success text-success">
     <div class="container">
       <div class="row">
@@ -83,6 +84,61 @@
         </div>
       </div>
     </div>
+  </div>
+  <!--/include-->
+
+  <div id="myCarousel-1" class="carousel slide" data-ride="carousel"  style="height: 20em;">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+    <li data-target="#myCarousel-1" data-slide-to="0" class="active"></li>
+    <li data-target="#myCarousel-1" data-slide-to="1"></li>
+    <li data-target="#myCarousel-1" data-slide-to="2"></li>
+    <li data-target="#myCarousel-1" data-slide-to="3"></li>
+    <li data-target="#myCarousel-1" data-slide-to="4"></li>
+    </ol>
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" role="listbox" style="height: 100%;">
+    <div class="item active" style="background: url('/tmp/images/Banners/WRC_HERO_2016_SPORTS.JPG') center top / cover; width: 100%; height: 100% !important;">
+    <div class="carousel-caption" style="display: none;">
+    <p>Werribee Roadworthy Centre</p>
+    </div>
+    </div>
+
+    <div class="item" style="background: url('/tmp/images/Banners/WRC_HERO_2016_MAROON.JPG') center center / cover; width: 100%; height: 100%;">
+    <div class="carousel-caption" style="display: none;">
+    <p>Maroon</p>
+    </div>
+    </div>
+
+    <div class="item" style="background: url('/tmp/images/Banners/WRC_HERO_2016_BLACK.JPG') center center / cover; width: 100%; height: 100%;">
+    <div class="carousel-caption" style="display: none;">
+    <p>Black</p>
+    </div>
+    </div>
+
+    <div class="item" style="background: url('/tmp/images/Banners/WRC_HERO_2016_RED.JPG') center center / cover; width: 100%; height: 100%;">
+    <div class="carousel-caption" style="display: none;">
+    <p>Orange</p>
+    </div>
+    </div>
+
+    <div class="item" style="background: url('/tmp/images/Banners/WRC_HERO_2016_COBRA.JPG') center top / cover; width: 100%; height: 100%;">
+    <div class="carousel-caption" style="display: none;">
+    <p>Cobra</p>
+    </div>
+    </div>
+    </div>
+
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#myCarousel-1" role="button" data-slide="prev" style="display: none;">
+    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel-1" role="button" data-slide="next" style="display: none;">
+    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+    </a>
   </div>
 
   <div id="intro">
@@ -129,7 +185,7 @@
       <div class="row">
         <!--On larger screens, spacing to left of icon--><div class="col-md-1 hidden-xs hidden-sm"></div>
         <div class="col-sm-4 col-md-3 col-lg-4 text-center">
-          <h3><span class="fa-stack fa-lg text-primary">
+          <h3><span class="fa-stack fa-lg">
             <i class="fa fa-stack-1x fa-circle" style="color:#eee;font-size:160%;"></i>
             <i class="fa fa-stack-1x fa-square" style="color:#eee;margin-top:0.3em;"></i>
             <i class="fa fa-stack-1x fa-square" style="color:#eee;margin-top:0.3em;margin-left:-0.5em;"></i>
@@ -200,7 +256,7 @@
       <div class="row">
         <!--On larger screens, spacing to left of icon--><div class="col-md-1 hidden-xs hidden-sm"></div>
         <div class="col-sm-4 col-md-3 col-lg-4 text-center">
-          <h3><span class="fa-stack fa-lg text-primary" style="margin-bottom:.4em;">
+          <h3><span class="fa-stack fa-lg" style="margin-bottom:.4em;">
             <i class="fa fa-stack-2x fa-certificate"></i>
             <i class="fa fa-stack-1x fa-bookmark" style="margin-top:.8em;"></i>
             <i class="fa fa-stack-1x fa-circle fa-inverse"></i>
@@ -226,7 +282,7 @@
       <div class="row">
         <!--On larger screens, spacing to left of icon--><div class="col-sm-1 col-md-2 hidden-xs"></div>
         <div class="col-sm-4 col-sm-push-7 col-md-3 col-md-push-6 col-lg-4 col-lg-push-5 text-center">
-          <h3><i class="fa fa-3x fa-road"></i><br>Classic &amp; Custom Cars</h3>
+          <h3><i class="fa fa-3x fa-flag-checkered"></i><br>Classic &amp; Custom Cars</h3>
         </div>
         <div class="col-sm-7 col-sm-pull-4 col-md-6 col-md-pull-3 col-lg-5 col-lg-pull-4 text-center">
           <p class="text-justify"><span class="hidden-xs"><br></span>
@@ -242,7 +298,7 @@
       <div class="row">
         <!--On larger screens, spacing to left of icon--><div class="col-md-1 hidden-xs hidden-sm"></div>
         <div class="col-sm-4 col-md-3 col-lg-4 text-center">
-          <h3><i class="fa fa-3x fa-cogs"></i><br>Charity</h3>
+          <h3><i class="fa fa-3x fa-heart"></i><br>Charity</h3>
         </div>
         <div class="col-sm-7 col-md-6 col-lg-5 text-center">
           <p class="text-justify"><span class="hidden-xs"><br></span>
@@ -253,12 +309,12 @@
       </div>
     </div>
   </div>
-  <div id="memberships" class="bg-info">
+  <div id="trusted" class="bg-info">
     <div class="container">
       <div class="row">
         <!--On larger screens, spacing to left of icon--><div class="col-sm-1 col-md-2 hidden-xs"></div>
         <div class="col-sm-4 col-sm-push-7 col-md-3 col-md-push-6 col-lg-4 col-lg-push-5 text-center">
-          <h3><i class="fa fa-3x fa-road"></i><br>Memberships</h3>
+          <h3><i class="fa fa-3x fa-thumbs-up"></i><br>Trusted</h3>
         </div>
         <div class="col-sm-7 col-sm-pull-4 col-md-6 col-md-pull-3 col-lg-5 col-lg-pull-4 text-center">
           <p class="text-justify"><span class="hidden-xs"><br></span>
